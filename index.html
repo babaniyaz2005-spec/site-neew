@@ -1441,5 +1441,36 @@ function toast(msg){
 // ═══════════════════════════════════════════
 rC(clinics);
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://kekrpiooyziemrgzvaya.supabase.co";
+
+const supabaseKey = "sb_publishable_u7-5DnfV1HGCTgShGOi6Zg_KL6nSTgV";
+
+const supabaseClient = supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
+
+console.log("Supabase подключен");
+</script>
+
+<script>
+async function testConnection() {
+  const { data, error } = await supabaseClient
+    .from("clinics")
+    .select("*")
+    .limit(5);
+
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
+}
+
+testConnection();
+</script>
+
+</body>
+</html>
 </body>
 </html>
