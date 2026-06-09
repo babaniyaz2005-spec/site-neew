@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MedUz — Стоматология онлайн</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--cr:#FAF8F5;--wh:#fff;--ink:#1A1612;--i2:#3D3530;--mu:#9A8F87;--go:#C9A84C;--gl:#F0E4C0;--gd:#A07830;--te:#2A6B6B;--tl:#E8F4F4;--re:#C04040;--rl:#FDEAEA;--bd:rgba(26,22,18,0.1);--sl:0 12px 48px rgba(26,22,18,0.13);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cr);color:var(--ink);}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,245,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;}
+.nlo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;cursor:pointer;}
+.nlo span{color:var(--go);}
+.nr{display:flex;gap:8px;align-items:center;}
+.ltog{display:flex;background:rgba(26,22,18,0.08);border-radius:100px;padding:3px;}
+.lb{border:none;background:none;padding:4px 11px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--mu);}
+.lb.on{background:var(--wh);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.nbtn{background:var(--ink);color:var(--wh);border:none;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.nbtn:hover{background:var(--gd);}
+.nbtn.out{background:transparent;color:var(--ink);border:1.5px solid var(--bd);}
+.hero{min-height:100vh;display:flex;align-items:center;padding:88px 20px 52px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 75% 40%,rgba(201,168,76,.07),transparent 60%);}
+.hc{max-width:520px;position:relative;z-index:1;}
+.hbadge{display:inline-flex;align-items:center;gap:7px;background:var(--gl);color:var(--gd);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:20px;}
+.ldot{width:6px;height:6px;background:var(--gd);border-radius:50%;animation:pu 2s infinite;display:inline-block;}
+@keyframes pu{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-1.5px;margin-bottom:14px;}
+.hero h1 em{font-style:normal;color:var(--go);}
+.hsu{font-size:15px;color:var(--mu);line-height:1.65;max-width:420px;margin-bottom:28px;font-weight:300;}
+.hbs{display:flex;gap:9px;flex-wrap:wrap;}
+.bp{background:var(--ink);color:var(--wh);border:none;padding:12px 22px;border-radius:100px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+.bp:hover{background:var(--gd);}
+.bo{background:transparent;color:var(--ink);border:1.5px solid var(--bd);padding:12px 22px;border-radius:100px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.hsts{display:flex;gap:28px;margin-top:40px;padding-top:28px;border-top:1px solid var(--bd);}
+.hsn{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;}
+.hsl{font-size:12px;color:var(--mu);margin-top:2px;}
+.himg{position:absolute;right:0;top:50%;transform:translateY(-50%);width:36%;height:68vh;background:linear-gradient(135deg,rgba(232,244,244,.8),rgba(240,228,192,.5));border-radius:44px 0 0 44px;display:flex;align-items:center;justify-content:center;font-size:80px;animation:fl 6s ease-in-out infinite;}
+@keyframes fl{0%,100%{transform:translateY(-50%);}50%{transform:translateY(calc(-50% - 10px));}}
+.ss{padding:0 20px;}
+.sb{max-width:720px;margin:0 auto;background:var(--wh);border:1px solid var(--bd);border-radius:14px;padding:4px;display:flex;gap:5px;box-shadow:var(--sl);}
+.si{flex:1;border:none;outline:none;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--ink);}
+.si::placeholder{color:var(--mu);}
+.sse{border:none;outline:none;padding:11px 10px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--cr);border-radius:9px;color:var(--ink);cursor:pointer;}
+.sbt{background:var(--go);color:var(--wh);border:none;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.fs{display:flex;gap:6px;flex-wrap:wrap;padding:12px 20px 0;max-width:760px;margin:0 auto;}
+.fc{border:1.5px solid var(--bd);background:var(--wh);padding:6px 13px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s;color:var(--i2);display:flex;align-items:center;gap:5px;user-select:none;}
+.fc.on{border-color:var(--go);background:var(--gl);color:var(--gd);font-weight:600;}
+.sort-row{display:flex;gap:7px;padding:9px 20px 0;max-width:760px;margin:0 auto;flex-wrap:wrap;}
+.srt{border:1.5px solid var(--bd);background:var(--wh);padding:5px 12px;border-radius:100px;font-size:11px;font-weight:500;cursor:pointer;color:var(--mu);font-family:'DM Sans',sans-serif;}
+.srt.on{border-color:var(--te);background:var(--tl);color:var(--te);}
+.sc{padding:52px 20px;}
+.sch{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;}
+.sct{font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);letter-spacing:-.8px;}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+@media(max-width:600px){.cg{grid-template-columns:1fr;}}
+.cc{background:var(--wh);border:1px solid var(--bd);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .22s;}
+.cc:hover{transform:translateY(-3px);box-shadow:var(--sl);}
+.ci{height:155px;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden;}
+.ci img{width:100%;height:100%;object-fit:cover;}
+.g1{background:linear-gradient(135deg,#E8F4F4,#D0EBEA);}
+.g2{background:linear-gradient(135deg,#EEF0E8,#E0E8D0);}
+.g3{background:linear-gradient(135deg,#F4EFE8,#EDE3D4);}
+.crat{position:absolute;top:9px;right:9px;background:var(--wh);font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.cb{padding:14px;}
+.cn{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:4px;}
+.cm{display:flex;gap:8px;font-size:11px;color:var(--mu);margin-bottom:8px;}
+.ct{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:11px;}
+.ctg{font-size:10px;font-weight:500;padding:3px 8px;border-radius:100px;background:var(--tl);color:var(--te);}
+.cf2{display:flex;justify-content:space-between;align-items:center;padding-top:9px;border-top:1px solid var(--bd);}
+.cp{font-size:11px;color:var(--mu);}
+.cp strong{color:var(--ink);font-size:12px;}
+.bsm{background:var(--ink);color:var(--wh);border:none;padding:6px 12px;border-radius:100px;font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.load-st{text-align:center;padding:48px;color:var(--mu);}
+.spin{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--go);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 12px;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.hw{background:var(--wh);padding:52px 20px;}
+.stps{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;margin-top:28px;max-width:780px;margin-left:auto;margin-right:auto;}
+.stp{text-align:center;}
+.stn{width:40px;height:40px;border-radius:50%;background:var(--gl);color:var(--gd);font-family:'Playfair Display',serif;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.stp h3{font-size:13px;font-weight:600;margin-bottom:4px;}
+.stp p{font-size:12px;color:var(--mu);line-height:1.5;}
+.ao{padding:0 20px;}
+.aw{background:var(--ink);border-radius:22px;padding:36px;position:relative;overflow:hidden;}
+.aw::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 85% 10%,rgba(201,168,76,.12),transparent 60%);}
+.ai2{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+@media(max-width:600px){.ai2{grid-template-columns:1fr;}}
+.all{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--go);margin-bottom:10px;}
+.aw h2{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);letter-spacing:-1px;margin-bottom:10px;color:var(--wh);}
+.aw p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:18px;}
+.ach{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;}
+.aml{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.aml.u{color:rgba(255,255,255,.4);}
+.aml.b{color:var(--go);}
+.ab{border-radius:9px;padding:10px 12px;font-size:12px;line-height:1.5;margin-bottom:10px;}
+.ab.u{background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);}
+.ab.b{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.18);color:rgba(255,255,255,.85);}
+.ar{display:flex;gap:5px;margin-top:4px;}
+.ain{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--wh);font-family:'DM Sans',sans-serif;outline:none;}
+.ain::placeholder{color:rgba(255,255,255,.3);}
+.asb{background:var(--go);border:none;border-radius:9px;padding:9px 13px;font-size:14px;cursor:pointer;}
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(26,22,18,.55);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.ov.open{opacity:1;pointer-events:all;}
+.mo{background:var(--wh);border-radius:20px;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;transform:translateY(14px);transition:transform .3s;}
+.ov.open .mo{transform:translateY(0);}
+.mh{height:175px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden;}
+.mh img{width:100%;height:100%;object-fit:cover;}
+.mcl{position:absolute;top:11px;right:11px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:30px;height:30px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.mb{padding:20px;}
+.mn{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:5px;}
+.mm{display:flex;gap:10px;font-size:11px;color:var(--mu);margin-bottom:14px;flex-wrap:wrap;}
+.msec{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);margin:16px 0 8px;}
+.mcs{display:flex;flex-wrap:wrap;gap:5px;}
+.mcp{font-size:11px;padding:4px 10px;border-radius:100px;background:var(--tl);color:var(--te);font-weight:500;}
+.svl{display:flex;flex-direction:column;gap:5px;}
+.svr2{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--cr);border-radius:9px;font-size:12px;}
+.svp{color:var(--gd);font-weight:600;}
+.mac{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+.bmp{display:flex;align-items:center;gap:6px;background:var(--tl);color:var(--te);border:none;padding:9px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.bmp:hover{background:var(--te);color:var(--wh);}
+.dr-grid{display:flex;flex-direction:column;gap:8px;}
+.dr-card{background:var(--cr);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;}
+.dr-av{width:44px;height:44px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden;}
+.dr-av img{width:100%;height:100%;object-fit:cover;}
+.dr-nm{font-weight:600;font-size:13px;margin-bottom:2px;}
+.dr-sp{font-size:11px;color:var(--mu);}
+.dr-ig{font-size:11px;color:var(--te);text-decoration:none;display:flex;align-items:center;gap:4px;margin-top:3px;}
+.rvs{display:flex;flex-direction:column;gap:9px;}
+.rvc{background:var(--cr);border-radius:12px;padding:13px;}
+.rvh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.rvn{font-weight:600;font-size:13px;}
+.rvs2{color:var(--go);font-size:13px;}
+.rvt{font-size:12px;color:var(--i2);line-height:1.5;}
+.rvd{font-size:10px;color:var(--mu);margin-top:4px;}
+.rev-frm{background:var(--cr);border-radius:12px;padding:13px;margin-top:10px;}
+.star-s{display:flex;gap:4px;margin-bottom:10px;}
+.star-s span{font-size:24px;cursor:pointer;opacity:.3;transition:opacity .15s;}
+.star-s span.on{opacity:1;}
+.bkw{display:none;margin-top:18px;}
+.bkw.on{display:block;}
+.bkt{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;margin-bottom:12px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff.fu{grid-column:1/-1;}
+.fl{font-size:11px;font-weight:600;color:var(--i2);}
+.fi,.fse,.fta{border:1.5px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--wh);outline:none;transition:border-color .2s;width:100%;}
+.fi:focus,.fse:focus,.fta:focus{border-color:var(--go);}
+.fta{resize:vertical;min-height:64px;}
+.tg{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+.ts{border:1.5px solid var(--bd);background:var(--wh);padding:5px 10px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;transition:all .18s;color:var(--i2);}
+.ts:hover:not(.tk){border-color:var(--go);color:var(--gd);}
+.ts.sl{border-color:var(--go);background:var(--gl);color:var(--gd);font-weight:700;}
+.ts.tk{background:var(--cr);color:var(--mu);cursor:default;text-decoration:line-through;opacity:.65;}
+.smn{display:flex;align-items:flex-start;gap:7px;background:var(--tl);border-radius:9px;padding:10px 12px;font-size:11px;color:var(--te);margin-top:8px;line-height:1.5;}
+.cfb{width:100%;background:var(--ink);color:var(--wh);border:none;padding:12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;}
+.cfb:hover{background:var(--gd);}
+.swrp{text-align:center;padding:24px 10px;display:none;}
+.swrp.on{display:block;}
+/* PROFILE MODAL */
+.prof-mo{background:var(--wh);border-radius:20px;width:100%;max-width:560px;max-height:94vh;overflow-y:auto;transform:translateY(14px);transition:transform .3s;}
+.ov.open .prof-mo{transform:translateY(0);}
+.prof-hd{padding:18px 20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;}
+.prof-tabs{display:flex;border-bottom:1px solid var(--bd);overflow-x:auto;}
+.ptab{padding:11px 14px;border:none;background:none;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--mu);border-bottom:2px solid transparent;white-space:nowrap;}
+.ptab.on{color:var(--ink);border-bottom-color:var(--go);}
+.prof-body{padding:18px;}
+/* AUTH MODAL */
+.auth-mo{background:var(--wh);border-radius:20px;width:100%;max-width:400px;transform:translateY(14px);transition:transform .3s;position:relative;}
+.ov.open .auth-mo{transform:translateY(0);}
+.atabs{display:flex;border-bottom:1px solid var(--bd);}
+.atab{flex:1;padding:13px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--mu);border-bottom:2px solid transparent;}
+.atab.on{color:var(--ink);border-bottom-color:var(--go);}
+.abody{padding:20px;}
+.atitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:16px;text-align:center;}
+.aerr{background:var(--rl);color:var(--re);font-size:12px;padding:8px 11px;border-radius:8px;margin-bottom:10px;display:none;}
+.aerr.on{display:block;}
+/* OWNER CLINIC PANEL */
+.panel-mo{background:var(--wh);border-radius:20px;width:100%;max-width:560px;max-height:94vh;overflow-y:auto;transform:translateY(14px);transition:transform .3s;}
+.ov.open .panel-mo{transform:translateY(0);}
+.ptabs2{display:flex;border-bottom:1px solid var(--bd);}
+.ptab2{flex:1;padding:11px;border:none;background:none;font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--mu);border-bottom:2px solid transparent;text-align:center;}
+.ptab2.on{color:var(--ink);border-bottom-color:var(--go);}
+.pbody{padding:16px;}
+/* ORDERS */
+.ol{display:flex;flex-direction:column;gap:9px;}
+.oc{background:var(--wh);border:1px solid var(--bd);border-radius:13px;overflow:hidden;}
+.oh{padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;gap:8px;}
+.oh:hover{background:var(--cr);}
+.oi h4{font-size:13px;font-weight:600;margin-bottom:2px;}
+.oi p{font-size:11px;color:var(--mu);}
+.o-actions{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.sbdg{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:100px;white-space:nowrap;}
+.s-op{background:rgba(201,168,76,.12);color:var(--gd);}
+.s-dn{background:rgba(42,107,107,.1);color:var(--te);}
+.s-lt{background:rgba(192,64,64,.1);color:var(--re);}
+.s-ns{background:rgba(90,90,90,.1);color:#555;}
+.o-btn{font-size:10px;font-weight:600;border:1.5px solid var(--bd);background:var(--wh);padding:3px 8px;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.o-btn.ed{border-color:var(--te);color:var(--te);}
+.o-btn.dl{border-color:var(--re);color:var(--re);}
+.o-btn.cl{border-color:var(--ink);color:var(--ink);}
+.ob{border-top:1px solid var(--bd);padding:13px;display:none;}
+.ob.on{display:block;}
+.osvcr{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--cr);border-radius:7px;font-size:12px;margin-bottom:5px;}
+.rm{background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0 3px;}
+.rm:hover{color:var(--re);}
+.ott{display:flex;justify-content:space-between;font-weight:700;font-size:13px;padding:8px 0 10px;border-bottom:1px solid var(--bd);margin-bottom:9px;}
+.spr{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px;}
+.spc{background:var(--cr);border-radius:8px;padding:9px;text-align:center;}
+.spl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px;}
+.spv{font-size:13px;font-weight:700;}
+/* ALL-IN-ONE ORDER FORM */
+.ord-form{background:var(--wh);border:1px solid var(--bd);border-radius:13px;padding:16px;margin-bottom:12px;display:none;}
+.ord-form.on{display:block;}
+.ord-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:13px;display:flex;justify-content:space-between;align-items:center;}
+.ord-svcs{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.ord-svc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--cr);border-radius:7px;font-size:12px;}
+.ord-add-row{display:flex;gap:6px;margin-bottom:6px;}
+.ord-add-sel{flex:1;border:1.5px solid var(--bd);border-radius:8px;padding:8px 11px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;background:var(--wh);}
+.ord-add-btn{background:var(--te);color:var(--wh);border:none;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.ord-custom{display:none;flex-direction:column;gap:6px;margin-bottom:8px;padding:10px;background:var(--cr);border-radius:8px;}
+.ord-custom.on{display:flex;}
+/* Services & doctors list in panel */
+.svc-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--cr);border-radius:8px;margin-bottom:6px;}
+/* Code box */
+.code-b{background:var(--gl);border-radius:10px;padding:13px;text-align:center;margin:11px 0;}
+.code-v{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gd);letter-spacing:4px;}
+/* Join clinic */
+.join-card{background:var(--tl);border-radius:12px;padding:14px;margin-bottom:12px;}
+.bk-c{background:var(--cr);border-radius:11px;padding:12px;margin-bottom:8px;}
+.bk-h{display:flex;justify-content:space-between;align-items:flex-start;}
+.bk-cl{font-weight:600;font-size:13px;}
+.bk-st{font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;}
+.st-p{background:rgba(201,168,76,.12);color:var(--gd);}
+.st-d{background:rgba(42,107,107,.1);color:var(--te);}
+.st-c{background:rgba(192,64,64,.1);color:var(--re);}
+.bk-dt{font-size:11px;color:var(--mu);margin-top:4px;}
+.tst{position:fixed;bottom:18px;right:18px;z-index:999;background:var(--ink);color:var(--wh);padding:10px 14px;border-radius:10px;font-size:12px;font-weight:500;box-shadow:var(--sl);transform:translateY(60px);opacity:0;transition:all .3s;max-width:280px;}
+.tst.on{transform:translateY(0);opacity:1;}
+footer{background:var(--ink);color:rgba(255,255,255,.5);padding:28px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.flo{font-family:'Playfair Display',serif;font-size:16px;color:var(--wh);}
+.flo span{color:var(--go);}
+.fln{display:flex;gap:16px;font-size:12px;}
+.fln a{color:rgba(255,255,255,.4);text-decoration:none;cursor:pointer;}
+@media(max-width:600px){
+  nav{padding:0 14px;}
+  .hero{padding:76px 14px 36px;}.himg{display:none;}
+  .ss{padding:0 14px;}.sb{flex-direction:column;}.fs{padding:10px 14px 0;}
+  .sc{padding:40px 14px;}.hw{padding:40px 14px;}
+  .ao{padding:0 14px;}.aw{padding:24px 16px;}
+  footer{padding:20px 14px;flex-direction:column;text-align:center;}
+  .mb{padding:14px;}.fg{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nlo" onclick="goTo('top')">Med<span>Uz</span></div>
+  <div class="nr">
+    <div class="ltog">
+      <button class="lb on" onclick="sL('ru',this)">RU</button>
+      <button class="lb" onclick="sL('uz',this)">UZ</button>
+    </div>
+    <div id="navAuth" style="display:flex;gap:6px;"></div>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="hc">
+    <div class="hbadge"><div class="ldot"></div><span>Первая медицинская платформа Узбекистана</span></div>
+    <h1>Запись к стоматологу — <em>онлайн</em> и просто</h1>
+    <p class="hsu">Сравнивайте клиники, смотрите цены, читайте реальные отзывы. AI определит к какому врачу обратиться.</p>
+    <div class="hbs">
+      <button class="bp" onclick="goTo('srch')">🔍 Найти клинику</button>
+      <button class="bo" onclick="goTo('aisec')">🤖 AI Диагностика</button>
+    </div>
+    <div class="hsts">
+      <div><div class="hsn" id="clcnt">—</div><div class="hsl">Клиник в базе</div></div>
+      <div><div class="hsn" id="bkcnt">—</div><div class="hsl">Записей всего</div></div>
+      <div><div class="hsn">4.8★</div><div class="hsl">Средний рейтинг</div></div>
+    </div>
+  </div>
+  <div class="himg">🦷</div>
+</section>
+
+<div class="ss" id="srch">
+  <div class="sb">
+    <input class="si" id="si" placeholder="Поиск клиники или услуги..." oninput="fC()"/>
+    <select class="sse" id="distF" onchange="fC()">
+      <option value="">Весь Ташкент</option>
+      <option>Юнусабад</option><option>Мирзо-Улугбек</option><option>Чиланзар</option><option>Яккасарай</option><option>Сергели</option>
+    </select>
+    <button class="sbt" onclick="fC()">Найти →</button>
+  </div>
+  <div class="fs">
+    <div class="fc" onclick="tF(this,'has_children')">👶 Детская</div>
+    <div class="fc" onclick="tF(this,'has_xray')">🩻 Рентген</div>
+    <div class="fc" onclick="tF(this,'has_cbct')">💠 КТ/КЛКТ</div>
+    <div class="fc" onclick="tF(this,'works_weekend')">📅 Выходные</div>
+    <div class="fc" onclick="tF(this,'accepts_uz')">🇺🇿 Узбекский</div>
+    <div class="fc" onclick="tF(this,'has_emergency')">⚡ Срочный</div>
+    <div class="fc" onclick="tF(this,'has_parking')">🅿️ Парковка</div>
+  </div>
+  <div class="sort-row">
+    <button class="srt on" onclick="setSort('rating',this)">⭐ По рейтингу</button>
+    <button class="srt" onclick="setSort('price_asc',this)">💰 Дешевле</button>
+    <button class="srt" onclick="setSort('price_desc',this)">💎 Дороже</button>
+    <button class="srt" onclick="setSort('reviews',this)">💬 По отзывам</button>
+  </div>
+</div>
+
+<section class="sc">
+  <div class="sch">
+    <h2 class="sct" style="font-family:'Playfair Display',serif;">Клиники Ташкента</h2>
+    <span style="font-size:12px;color:var(--mu);" id="cCnt"></span>
+  </div>
+  <div id="cgrid"><div class="load-st"><div class="spin"></div><p>Загружаем клиники...</p></div></div>
+</section>
+
+<section class="hw">
+  <div class="sch" style="max-width:780px;margin:0 auto 0;"><h2 style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);">Как это работает</h2></div>
+  <div class="stps">
+    <div class="stp"><div class="stn">1</div><h3>AI диагностика</h3><p>Опишите симптомы — AI определит к какому врачу идти</p></div>
+    <div class="stp"><div class="stn">2</div><h3>Выберите клинику</h3><p>Сравните цены, отзывы, фильтруйте</p></div>
+    <div class="stp"><div class="stn">3</div><h3>Запишитесь онлайн</h3><p>Выберите время. SMS за 1 час до приёма</p></div>
+    <div class="stp"><div class="stn">4</div><h3>Приходите лечиться</h3><p>Врач уже знает вашу информацию</p></div>
+  </div>
+</section>
+
+<div class="ao sc" id="aisec" style="padding-top:0;">
+  <div class="aw">
+    <div class="ai2">
+      <div>
+        <div class="all">🤖 AI Симптом-чекер</div>
+        <h2>Не знаете к какому врачу?</h2>
+        <p>Опишите симптомы — AI определит причину и нужного специалиста. Бесплатно.</p>
+        <button class="bp" onclick="goTo('aisec')" style="background:var(--go);color:var(--ink);">Попробовать →</button>
+      </div>
+      <div class="ach" id="aichat">
+        <div class="aml b">🤖 MedUz AI</div>
+        <div class="ab b">Здравствуйте! Опишите симптомы — помогу определить причину и к какому врачу обратиться.</div>
+        <div id="aimsgs"></div>
+        <div class="ar">
+          <input class="ain" id="aiinp" placeholder="Опишите симптомы..." onkeydown="if(event.key==='Enter')sAI()"/>
+          <button class="asb" onclick="sAI()">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="flo">Med<span>Uz</span></div>
+  <div class="fln"><a>О нас</a><a onclick="openPanel()">Для клиник</a><a>Конфиденциальность</a></div>
+  <div style="font-size:11px;">© 2026 MedUz · Toshkent</div>
+</footer>
+
+<!-- CLINIC MODAL -->
+<div class="ov" id="cov">
+  <div class="mo">
+    <div class="mh g1" id="mhimg"><button class="mcl" onclick="cM('cov')">✕</button><span id="memi" style="font-size:48px;">🏥</span></div>
+    <div class="mb">
+      <h2 class="mn" id="mname"></h2>
+      <div class="mm" id="mmeta"></div>
+      <div class="msec">Возможности</div>
+      <div class="mcs" id="mchips"></div>
+      <div class="msec">Услуги и цены</div>
+      <div class="svl" id="msvcs"></div>
+      <div class="msec">Врачи</div>
+      <div class="dr-grid" id="mdrs"></div>
+      <div class="mac">
+        <button class="bp" onclick="showBk()">📅 Записаться онлайн</button>
+        <button class="bmp" id="mpbtn">🗺️ Маршрут</button>
+      </div>
+      <div class="bkw" id="bkw">
+        <div id="bkfm">
+          <h3 class="bkt">Онлайн запись</h3>
+          <div class="fg">
+            <div class="ff"><label class="fl">Имя</label><input class="fi" id="bn" placeholder="Имя Фамилия"/></div>
+            <div class="ff"><label class="fl">Телефон</label><input class="fi" id="bp2" placeholder="+998 90 000 00 00"/></div>
+            <div class="ff"><label class="fl">Дата</label><input class="fi" type="date" id="bd"/></div>
+            <div class="ff"><label class="fl">Врач</label><select class="fse" id="bdr"><option value="">Любой врач</option></select></div>
+            <div class="ff fu"><label class="fl">Услуга</label><select class="fse" id="bsv"><option>Первичный осмотр</option></select></div>
+            <div class="ff fu"><label class="fl">Время</label><div class="tg" id="tgrid"></div></div>
+            <div class="ff fu"><label class="fl">Симптомы</label><textarea class="fta" id="bsy" placeholder="Опишите проблему..."></textarea></div>
+          </div>
+          <div class="smn">📱 SMS-напоминание за 1 час до приёма</div>
+          <button class="cfb" onclick="confBk()">Подтвердить запись</button>
+        </div>
+        <div class="swrp" id="swrp">
+          <div style="font-size:48px;margin-bottom:10px;">✅</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px;">Запись подтверждена!</h3>
+          <p id="stxt" style="color:var(--mu);font-size:12px;"></p>
+        </div>
+      </div>
+      <div class="msec">Отзывы <span id="rCnt" style="color:var(--mu);font-weight:400;font-size:12px;"></span></div>
+      <div class="rvs" id="mrvs"></div>
+      <div class="rev-frm" id="revFrm" style="display:none;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;">Оставить отзыв</div>
+        <div class="star-s" id="starS">
+          <span onclick="selStar(1)">★</span><span onclick="selStar(2)">★</span>
+          <span onclick="selStar(3)">★</span><span onclick="selStar(4)">★</span><span onclick="selStar(5)">★</span>
+        </div>
+        <textarea class="fta" id="rvTxt" placeholder="Поделитесь впечатлением..."></textarea>
+        <button class="cfb" onclick="submitRev()">Отправить отзыв</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="ov" id="authOv">
+  <div class="auth-mo">
+    <button style="position:absolute;top:11px;right:11px;background:rgba(0,0,0,.07);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:13px;z-index:1;" onclick="cM('authOv')">✕</button>
+    <div class="atabs">
+      <button class="atab on" id="atab-in" onclick="swAT('in')">Войти</button>
+      <button class="atab" id="atab-up" onclick="swAT('up')">Регистрация</button>
+    </div>
+    <div class="abody">
+      <div id="aForm-in">
+        <h2 class="atitle">Добро пожаловать</h2>
+        <div class="aerr" id="inErr"></div>
+        <div class="ff" style="margin-bottom:10px;"><label class="fl">Email</label><input class="fi" id="inEmail" type="email" placeholder="email@example.com"/></div>
+        <div class="ff" style="margin-bottom:14px;"><label class="fl">Пароль</label><input class="fi" id="inPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <button class="cfb" onclick="doLogin()">Войти</button>
+        <p style="text-align:center;font-size:12px;color:var(--mu);margin-top:11px;">Нет аккаунта? <a onclick="swAT('up')" style="color:var(--gd);cursor:pointer;">Зарегистрироваться</a></p>
+      </div>
+      <div id="aForm-up" style="display:none;">
+        <h2 class="atitle">Создать аккаунт</h2>
+        <div class="aerr" id="upErr"></div>
+        <div class="fg">
+          <div class="ff fu"><label class="fl">Имя</label><input class="fi" id="upName" placeholder="Имя Фамилия"/></div>
+          <div class="ff fu"><label class="fl">Email</label><input class="fi" id="upEmail" type="email" placeholder="email@example.com"/></div>
+          <div class="ff"><label class="fl">Телефон</label><input class="fi" id="upPhone" placeholder="+998 90..."/></div>
+          <div class="ff"><label class="fl">Пароль</label><input class="fi" id="upPass" type="password" placeholder="минимум 6 символов"/></div>
+        </div>
+        <button class="cfb" style="margin-top:10px;" onclick="doRegister()">Создать аккаунт</button>
+        <p style="text-align:center;font-size:12px;color:var(--mu);margin-top:10px;">Уже есть аккаунт? <a onclick="swAT('in')" style="color:var(--gd);cursor:pointer;">Войти</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="ov" id="profOv">
+  <div class="prof-mo">
+    <div class="prof-hd">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:600;" id="profName">Мой профиль</div>
+        <div style="font-size:11px;color:var(--mu);" id="profEmail"></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="nbtn" style="background:var(--rl);color:var(--re);font-size:11px;" onclick="doLogout()">Выйти</button>
+        <button style="background:var(--bd);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:12px;" onclick="cM('profOv')">✕</button>
+      </div>
+    </div>
+    <div class="prof-tabs" id="profTabs">
+      <button class="ptab on" onclick="profTab('info',this)">👤 Профиль</button>
+      <button class="ptab" onclick="profTab('bk',this)">📅 Мои записи</button>
+      <button class="ptab" onclick="profTab('clinic',this)" id="ptab-clinic">🏥 Клиника</button>
+    </div>
+    <div class="prof-body">
+      <!-- Profile info -->
+      <div id="pt-info">
+        <div class="ff" style="margin-bottom:10px;"><label class="fl">Имя</label><input class="fi" id="prName" placeholder="Имя Фамилия"/></div>
+        <div class="ff" style="margin-bottom:10px;"><label class="fl">Телефон</label><input class="fi" id="prPhone" placeholder="+998 90..."/></div>
+        <button class="cfb" onclick="saveProf()">Сохранить профиль</button>
+        <hr style="margin:18px 0;border:none;border-top:1px solid var(--bd);"/>
+        <!-- Join clinic as doctor -->
+        <div id="joinClinicSection">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Работаю в клинике</div>
+          <p style="font-size:12px;color:var(--mu);margin-bottom:10px;">Введите код клиники от вашего руководителя чтобы получить доступ к панели врача</p>
+          <div class="aerr" id="joinErr"></div>
+          <div style="display:flex;gap:8px;">
+            <input class="fi" id="joinCode" placeholder="Код клиники (напр. ABC123)" style="letter-spacing:3px;font-weight:700;text-transform:uppercase;"/>
+            <button class="cfb" style="width:auto;padding:9px 16px;margin:0;" onclick="joinClinic()">Войти</button>
+          </div>
+        </div>
+        <div id="myDoctorInfo" style="display:none;">
+          <div style="background:var(--tl);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;color:var(--te);font-weight:600;">✅ Вы прикреплены к клинике</div>
+            <div style="font-size:14px;font-weight:700;margin-top:3px;" id="myDocClinicName"></div>
+          </div>
+          <button class="cfb" style="margin-top:10px;background:var(--te);" onclick="openPanel()">Открыть панель клиники</button>
+        </div>
+      </div>
+      <!-- Bookings -->
+      <div id="pt-bk" style="display:none;">
+        <div id="bkList"><div class="load-st" style="padding:24px;"><div class="spin"></div></div></div>
+      </div>
+      <!-- Clinic (owner) -->
+      <div id="pt-clinic" style="display:none;">
+        <div id="ptcl-noClinic">
+          <p style="font-size:13px;color:var(--mu);margin-bottom:14px;">Создайте профиль вашей клиники — он появится в каталоге для пациентов</p>
+          <div class="fg">
+            <div class="ff fu"><label class="fl">Название клиники</label><input class="fi" id="cln" placeholder="Dent Luxe Clinic"/></div>
+            <div class="ff fu"><label class="fl">Описание</label><textarea class="fta" id="cld" placeholder="О клинике..." style="min-height:52px;"></textarea></div>
+            <div class="ff"><label class="fl">Район</label>
+              <select class="fse" id="clDist">
+                <option value="">Выберите район</option>
+                <option>Юнусабад</option><option>Мирзо-Улугбек</option><option>Чиланзар</option><option>Яккасарай</option><option>Сергели</option><option>Шайхантохур</option>
+              </select>
+            </div>
+            <div class="ff"><label class="fl">Телефон</label><input class="fi" id="clPh" placeholder="+998 71..."/></div>
+            <div class="ff fu"><label class="fl">Адрес</label><input class="fi" id="clAddr" placeholder="Юнусабад, 19-квартал, 5А"/></div>
+          </div>
+          <div style="margin:11px 0;">
+            <div class="fl" style="margin-bottom:8px;">Возможности</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_ch"/> 👶 Детская</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_xr"/> 🩻 Рентген</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_cb"/> 💠 КТ/КЛКТ</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_wk"/> 📅 Выходные</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_uz"/> 🇺🇿 Узбекский</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_pk"/> 🅿️ Парковка</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cl_em"/> ⚡ Срочный</label>
+            </div>
+          </div>
+          <button class="cfb" onclick="createClinic()">Создать клинику</button>
+        </div>
+        <div id="ptcl-hasClinic" style="display:none;">
+          <div style="background:var(--tl);border-radius:11px;padding:13px;margin-bottom:12px;">
+            <div style="font-size:11px;color:var(--te);font-weight:600;margin-bottom:2px;">✅ Ваша клиника активна</div>
+            <div style="font-size:15px;font-weight:700;" id="myClNm"></div>
+            <div style="font-size:11px;color:var(--mu);" id="myClAd"></div>
+          </div>
+          <div class="code-b">
+            <div style="font-size:11px;color:var(--mu);margin-bottom:5px;">Код для врачей</div>
+            <div class="code-v" id="myClCode"></div>
+            <div style="font-size:11px;color:var(--mu);margin-top:4px;">Отправьте этот код вашим врачам в WhatsApp</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="bp" style="font-size:12px;padding:9px 16px;flex:1;" onclick="cpCode()">📋 Скопировать код</button>
+            <button class="bp" style="font-size:12px;padding:9px 16px;flex:1;background:var(--te);" onclick="cM('profOv');openPanel()">🏥 Открыть панель</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLINIC PANEL (Owner/Doctor) -->
+<div class="ov" id="panelOv">
+  <div class="panel-mo">
+    <div style="padding:16px 18px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:600;" id="panelTitle">Панель клиники</div><div style="font-size:11px;color:var(--mu);" id="panelSub"></div></div>
+      <button style="background:var(--bd);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:12px;" onclick="cM('panelOv')">✕</button>
+    </div>
+    <div class="ptabs2">
+      <button class="ptab2 on" onclick="panTab('orders',this)">📋 Ордера</button>
+      <button class="ptab2" onclick="panTab('services',this)" id="ptab2-sv">💉 Услуги</button>
+      <button class="ptab2" onclick="panTab('doctors',this)" id="ptab2-dr">👨‍⚕️ Врачи</button>
+      <button class="ptab2" onclick="panTab('bookings',this)">📅 Записи</button>
+    </div>
+    <div class="pbody">
+      <!-- ORDERS TAB -->
+      <div id="pan-orders">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:12px;color:var(--te);font-weight:500;">● <span id="openCnt">0</span> открытых</span>
+          <button style="background:var(--go);color:var(--wh);border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="togOrdForm()">+ Новый ордер</button>
+        </div>
+        <!-- ALL-IN-ONE ORDER FORM -->
+        <div class="ord-form" id="ordForm">
+          <div class="ord-title">
+            <span id="ordFormTitle">📋 Новый ордер</span>
+            <button onclick="togOrdForm()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--mu);">✕</button>
+          </div>
+          <div class="fg" style="margin-bottom:12px;">
+            <div class="ff"><label class="fl">Имя пациента</label><input class="fi" id="onm" placeholder="Имя Фамилия"/></div>
+            <div class="ff"><label class="fl">Телефон</label><input class="fi" id="oph" placeholder="+998 90..."/></div>
+            <div class="ff fu" id="odrWrap"><label class="fl">Врач</label><select class="fse" id="odr" onchange="rOTimes()"></select></div>
+            <div class="ff fu">
+              <label class="fl">Время приёма</label>
+              <div class="tg" id="oTimeGrid" style="margin-top:4px;"></div>
+              <div id="oConflict" style="font-size:11px;color:var(--re);margin-top:5px;display:none;padding:5px 9px;background:var(--rl);border-radius:6px;"></div>
+            </div>
+          </div>
+          <!-- Services in order form -->
+          <div class="fl" style="margin-bottom:7px;">Услуги <span style="color:var(--mu);font-weight:400;">(добавьте все сразу)</span></div>
+          <div class="ord-svcs" id="ordSvcs"></div>
+          <div class="ord-add-row">
+            <select class="ord-add-sel" id="ordSvcSel"></select>
+            <button class="ord-add-btn" onclick="addOrdSvc()">+ Добавить</button>
+          </div>
+          <div class="ord-custom" id="ordCustom">
+            <div class="fl">Другое (вручную)</div>
+            <div style="display:flex;gap:6px;">
+              <input class="fi" id="custNm" placeholder="Название услуги" style="flex:2;"/>
+              <input class="fi" id="custPr" placeholder="Сумма" type="number" style="flex:1;min-width:80px;"/>
+              <button class="ord-add-btn" onclick="addCustomSvc()">OK</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="cfb" style="margin-top:0;" onclick="submitOrder()">Создать ордер</button>
+          </div>
+        </div>
+        <div class="ol" id="olist"></div>
+      </div>
+      <!-- SERVICES TAB -->
+      <div id="pan-services" style="display:none;">
+        <div id="svList" style="margin-bottom:12px;"></div>
+        <div style="background:var(--cr);border-radius:11px;padding:12px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:9px;">Добавить услугу</div>
+          <div class="fg">
+            <div class="ff fu"><label class="fl">Название</label><input class="fi" id="svNm" placeholder="Лечение кариеса"/></div>
+            <div class="ff"><label class="fl">Цена от (сум)</label><input class="fi" type="number" id="svPr" placeholder="250000"/></div>
+            <div class="ff"><label class="fl">Цена до (сум)</label><input class="fi" type="number" id="svPrMax" placeholder="необязательно"/></div>
+            <div class="ff fu"><label class="fl">Категория</label>
+              <select class="fse" id="svCat"><option>Терапия</option><option>Хирургия</option><option>Ортодонтия</option><option>Протезирование</option><option>Отбеливание</option><option>Диагностика</option></select>
+            </div>
+          </div>
+          <button class="cfb" onclick="addSvc()">Добавить услугу</button>
+        </div>
+      </div>
+      <!-- DOCTORS TAB -->
+      <div id="pan-doctors" style="display:none;">
+        <div id="drList" style="margin-bottom:12px;"></div>
+        <div style="background:var(--cr);border-radius:11px;padding:12px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:9px;">Добавить врача вручную</div>
+          <div class="fg">
+            <div class="ff fu"><label class="fl">Имя врача</label><input class="fi" id="drNm" placeholder="Алишер Рахимов"/></div>
+            <div class="ff"><label class="fl">Специализация</label><input class="fi" id="drSp" placeholder="Терапевт"/></div>
+            <div class="ff"><label class="fl">Стаж (лет)</label><input class="fi" type="number" id="drExp" placeholder="5"/></div>
+            <div class="ff fu"><label class="fl">Instagram</label><input class="fi" id="drIg" placeholder="@username"/></div>
+          </div>
+          <button class="cfb" onclick="addDr()">Добавить врача</button>
+        </div>
+      </div>
+      <!-- BOOKINGS TAB -->
+      <div id="pan-bookings" style="display:none;">
+        <div id="panBkList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tst" id="tst"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG — замени ключ на свой если изменился
+// ══════════════════════════════════════════════
+var SUPA_URL='https://kekrpiooyziemrgzvaya.supabase.co'
+var SUPA_KEY='sb_publishable_u7-5DnfV1HGCTgShGOi6Zg_KL6nSTgV'
+var db=window.supabase.createClient(SUPA_URL,SUPA_KEY)
+
+// STATE
+var user=null,profile=null,myClinic=null,myDoctor=null
+var openedClinic=null,allClinics=[],activeFilters=new Set()
+var sortBy='rating',selBkTime=null,selRevStar=0
+var ordSvcs=[],selOrdTime=null,editingOrderId=null
+var panelRole=null // 'owner' or 'doctor'
+
+// DEMO clinics (shown when DB is empty)
+var DEMO=[
+  {id:'d1',name:'Dent Luxe Clinic',address:'Юнусабад, 19-квартал, 5А',district:'Юнусабад',rating:4.9,review_count:124,has_children:true,has_xray:true,has_cbct:true,works_weekend:true,accepts_uz:true,has_parking:true,photo_url:'',
+   services:[{name:'Первичный осмотр',price:50000},{name:'Лечение кариеса',price:250000,price_max:450000},{name:'Отбеливание',price:800000},{name:'Коронка (цирконий)',price:1500000,price_max:2500000}],
+   doctors:[{name:'Алишер Рахимов',specialty:'Терапевт',experience:8,rating:4.9,instagram:'@alisherrakhimov',photo_url:''}],
+   reviews:[{patient_name:'Азиза К.',rating:5,text:'Отличная клиника! Врачи профессиональные.',created_at:'2026-05-15'}]},
+  {id:'d2',name:'Ortho Center',address:'Мирзо-Улугбек, ул. Мустақиллик, 22',district:'Мирзо-Улугбек',rating:4.8,review_count:89,has_xray:true,accepts_uz:true,has_emergency:true,photo_url:'',
+   services:[{name:'Консультация ортодонта',price:80000},{name:'Брекеты металлические',price:3500000},{name:'Элайнеры',price:7000000,price_max:12000000}],
+   doctors:[{name:'Зарина Юсупова',specialty:'Ортодонт',experience:5,rating:4.8,instagram:'@zarina_ortho',photo_url:''}],
+   reviews:[{patient_name:'Бобур Р.',rating:5,text:'Очень доволен результатом!',created_at:'2026-05-10'}]},
+  {id:'d3',name:'SmilePro',address:'Чиланзар, 3-квартал, 12',district:'Чиланзар',rating:4.7,review_count:203,has_children:true,has_xray:true,works_weekend:true,has_parking:true,photo_url:'',
+   services:[{name:'Первичный осмотр',price:0},{name:'Имплант (под ключ)',price:4500000,price_max:7000000},{name:'Чистка',price:200000}],
+   doctors:[{name:'Санжар Каримов',specialty:'Хирург-имплантолог',experience:12,rating:4.7,photo_url:''}],
+   reviews:[{patient_name:'Малика Т.',rating:4,text:'Хорошая клиника, рекомендую.',created_at:'2026-04-28'}]},
+  {id:'d4',name:'ArtDent',address:'Яккасарай, ул. Амира Темура, 107Б',district:'Яккасарай',rating:4.9,review_count:67,has_xray:true,has_cbct:true,accepts_uz:true,has_parking:true,photo_url:'',
+   services:[{name:'Виниры (1 зуб)',price:2200000,price_max:3500000},{name:'Голливудская улыбка',price:22000000},{name:'Отбеливание ZOOM',price:1200000}],
+   doctors:[{name:'Нилуфар Рашидова',specialty:'Ортопед-эстетист',experience:7,rating:4.9,instagram:'@nilufarashidova',photo_url:''}],
+   reviews:[{patient_name:'Одил К.',rating:5,text:'Виниры — результат превзошёл ожидания!',created_at:'2026-04-20'}]},
+  {id:'d5',name:'Family Dent',address:'Сергели, 14-квартал, 8',district:'Сергели',rating:4.6,review_count:156,has_children:true,has_xray:true,works_weekend:true,accepts_uz:true,has_emergency:true,photo_url:'',
+   services:[{name:'Осмотр',price:40000},{name:'Детский осмотр',price:0},{name:'Лечение кариеса',price:180000,price_max:320000}],
+   doctors:[{name:'Шахло Мирзаева',specialty:'Детский стоматолог',experience:6,rating:4.6,photo_url:''}],
+   reviews:[{patient_name:'Феруза А.',rating:4,text:'Детский врач отличный, ребёнок не боялся!',created_at:'2026-04-15'}]}
+]
+
+var BASE_SVCS=[
+  {name:'Осмотр',price:50000},{name:'Рентген',price:60000},{name:'Чистка',price:180000},
+  {name:'Пломба',price:280000},{name:'Удаление зуба',price:220000},{name:'Лечение пульпита',price:550000},
+  {name:'Коронка (цирконий)',price:1800000},{name:'Отбеливание',price:900000}
+]
+
+var cliSvcs=[]
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+async function init(){
+  var s=await db.auth.getSession()
+  if(s.data&&s.data.session) await onLogin(s.data.session.user)
+  db.auth.onAuthStateChange(async function(ev,ses){
+    if(ev==='SIGNED_IN'&&ses) await onLogin(ses.user)
+    if(ev==='SIGNED_OUT') onLogout()
+  })
+  await loadClinics()
+}
+
+async function onLogin(u){
+  user=u
+  var r=await db.from('profiles').select('*').eq('id',u.id).maybeSingle()
+  profile=r.data
+  // Load clinic (owner)
+  if(profile){
+    var cr=await db.from('clinics').select('*').eq('owner_id',u.id).maybeSingle()
+    myClinic=cr.data
+    // Load doctor link
+    var dr=await db.from('doctors').select('*, clinic:clinics(name,id)').eq('user_id',u.id).maybeSingle()
+    myDoctor=dr.data
+  }
+  updateNavAuth()
+}
+
+function onLogout(){
+  user=null;profile=null;myClinic=null;myDoctor=null
+  updateNavAuth();cM('profOv');cM('panelOv')
+}
+
+function updateNavAuth(){
+  var el=document.getElementById('navAuth')
+  if(!user){
+    el.innerHTML='<button class="nbtn" onclick="openAuth()">Войти</button>'
+  } else {
+    var nm=profile?profile.name||user.email.split('@')[0]:user.email.split('@')[0]
+    el.innerHTML='<button class="nbtn" onclick="openProf()">👤 '+nm.split(' ')[0]+'</button>'
+  }
+}
+
+// ══════════════════════════════════════════════
+// CLINICS
+// ══════════════════════════════════════════════
+async function loadClinics(){
+  var r=await db.from('clinics').select('*, services(*), doctors(*), reviews(*)').eq('is_active',true)
+  if(r.error||!r.data||r.data.length===0){
+    allClinics=DEMO
+  } else {
+    allClinics=r.data
+  }
+  document.getElementById('clcnt').textContent=allClinics.length+'+'
+  var bkr=await db.from('bookings').select('id',{count:'exact',head:true})
+  document.getElementById('bkcnt').textContent=(bkr.count||0)+'+'
+  renderClinics(sortClinics(allClinics))
+}
+
+function fC(){
+  var q=document.getElementById('si').value.toLowerCase()
+  var d=document.getElementById('distF').value
+  var res=allClinics.filter(function(c){
+    var mq=!q||c.name.toLowerCase().indexOf(q)>=0||(c.address||'').toLowerCase().indexOf(q)>=0
+    var md=!d||c.district===d
+    var mf=true;if(activeFilters.size>0){activeFilters.forEach(function(f){if(!c[f])mf=false;})}
+    return mq&&md&&mf
+  })
+  renderClinics(sortClinics(res))
+}
+
+function sortClinics(list){
+  return list.slice().sort(function(a,b){
+    if(sortBy==='rating') return (b.rating||0)-(a.rating||0)
+    if(sortBy==='reviews') return (b.review_count||0)-(a.review_count||0)
+    var ap=a.services&&a.services[0]?a.services[0].price||999999:999999
+    var bp2=b.services&&b.services[0]?b.services[0].price||999999:999999
+    if(sortBy==='price_asc') return ap-bp2
+    if(sortBy==='price_desc') return bp2-ap
+    return 0
+  })
+}
+
+function setSort(s,btn){
+  sortBy=s
+  document.querySelectorAll('.srt').forEach(function(b){b.classList.remove('on');})
+  btn.classList.add('on');fC()
+}
+
+function tF(el,tag){
+  el.classList.toggle('on')
+  if(activeFilters.has(tag))activeFilters.delete(tag);else activeFilters.add(tag)
+  fC()
+}
+
+var GR=['g1','g2','g3']
+function renderClinics(list){
+  document.getElementById('cCnt').textContent=list.length+' клиник'
+  if(list.length===0){document.getElementById('cgrid').innerHTML='<div class="load-st" style="padding:40px;">😕 Клиники не найдены</div>';return}
+  var html=''
+  for(var i=0;i<list.length;i++){
+    var c=list[i]
+    var chips=[]
+    if(c.has_children)chips.push('Детская')
+    if(c.has_xray)chips.push('Рентген')
+    if(c.has_cbct)chips.push('КТ/КЛКТ')
+    if(c.works_weekend)chips.push('Выходные')
+    if(c.accepts_uz)chips.push('На узбекском')
+    if(c.has_parking)chips.push('Парковка')
+    if(c.has_emergency)chips.push('Срочный')
+    var minPr=0
+    if(c.services&&c.services.length>0){var prs=c.services.map(function(s){return s.price||0;}).filter(function(p){return p>0;});if(prs.length>0)minPr=Math.min.apply(null,prs);}
+    var imgH=c.photo_url?'<img src="'+c.photo_url+'" alt="'+c.name+'"/>':'<span style="font-size:40px;">🏥</span>'
+    html+='<div class="cc" onclick="opC(\''+c.id+'\','+i+')">'
+      +'<div class="ci '+GR[i%3]+'">'+imgH+'<div class="crat">★ '+(c.rating||'—')+'</div></div>'
+      +'<div class="cb"><div class="cn">'+c.name+'</div>'
+      +'<div class="cm"><span>📍 '+(c.district||'Ташкент')+'</span>'+(c.review_count?'<span>💬 '+c.review_count+'</span>':'')+'</div>'
+      +'<div class="ct">'+chips.slice(0,3).map(function(ch){return'<span class="ctg">'+ch+'</span>';}).join('')+'</div>'
+      +'<div class="cf2"><div class="cp">'+(minPr>0?'от <strong>'+minPr.toLocaleString()+' сум</strong>':'<strong>Позвоните</strong>')+'</div><button class="bsm">Записаться</button></div>'
+      +'</div></div>'
+  }
+  document.getElementById('cgrid').innerHTML=html
+}
+
+// ══════════════════════════════════════════════
+// CLINIC DETAIL
+// ══════════════════════════════════════════════
+async function opC(id,idx){
+  var c=allClinics.find(function(x){return x.id===id;})||allClinics[idx]
+  if(!c)return
+  if(id&&id.charAt(0)!=='d'){
+    var r=await db.from('clinics').select('*, services(*), doctors(*), reviews(*)').eq('id',id).single()
+    if(r.data)c=r.data
+  }
+  openedClinic=c
+  var mh=document.getElementById('mhimg')
+  mh.className='mh '+GR[idx%3]
+  mh.innerHTML='<button class="mcl" onclick="cM(\'cov\')">✕</button>'+(c.photo_url?'<img src="'+c.photo_url+'" alt="'+c.name+'"/>':'<span style="font-size:48px;">🏥</span>')
+  document.getElementById('mname').textContent=c.name
+  document.getElementById('mmeta').innerHTML='<span>📍 '+(c.address||c.district||'Ташкент')+'</span>'+(c.phone?'<span>📞 '+c.phone+'</span>':'')+'<span>★ '+(c.rating||'—')+' ('+(c.review_count||0)+')</span>'
+  var chips=[]
+  if(c.has_children)chips.push('Детская стоматология')
+  if(c.has_xray)chips.push('Рентген')
+  if(c.has_cbct)chips.push('КТ/КЛКТ')
+  if(c.works_weekend)chips.push('Работает в выходные')
+  if(c.accepts_uz)chips.push('Приём на узбекском')
+  if(c.has_parking)chips.push('Парковка')
+  if(c.has_emergency)chips.push('Срочный приём')
+  document.getElementById('mchips').innerHTML=chips.map(function(ch){return'<div class="mcp">'+ch+'</div>';}).join('')
+  var svcs=c.services||[]
+  document.getElementById('msvcs').innerHTML=svcs.length===0?'<p style="color:var(--mu);font-size:12px;">Услуги не указаны</p>':svcs.map(function(s){
+    var p=s.price===0?'Бесплатно':s.price.toLocaleString()+(s.price_max?'–'+s.price_max.toLocaleString():'')+' сум'
+    return'<div class="svr2"><span>'+s.name+'</span><span class="svp">'+p+'</span></div>'
+  }).join('')
+  var drs=c.doctors||[]
+  document.getElementById('mdrs').innerHTML=drs.length===0?'<p style="color:var(--mu);font-size:12px;">Врачи не указаны</p>':drs.map(function(d){
+    return'<div class="dr-card"><div class="dr-av">'+(d.photo_url?'<img src="'+d.photo_url+'"/>':'👨‍⚕️')+'</div>'
+      +'<div><div class="dr-nm">'+d.name+'</div><div class="dr-sp">'+(d.specialty||'')+(d.experience?' · '+d.experience+' лет':'')+'</div>'
+      +(d.rating?'<div style="font-size:11px;color:var(--gd);">★ '+d.rating+'</div>':'')
+      +(d.instagram?'<a class="dr-ig" href="https://instagram.com/'+d.instagram.replace('@','')+'" target="_blank">📷 '+d.instagram+'</a>':'')
+      +'</div></div>'
+  }).join('')
+  document.getElementById('bdr').innerHTML='<option value="">Любой врач</option>'+drs.map(function(d){return'<option value="'+(d.id||d.name)+'">'+d.name+'</option>';}).join('')
+  document.getElementById('bsv').innerHTML=svcs.length>0?svcs.map(function(s){return'<option>'+s.name+'</option>';}).join(''):'<option>Первичный осмотр</option>'
+  document.getElementById('mpbtn').onclick=function(){window.open('https://maps.google.com/?q='+encodeURIComponent(c.address||c.name),'_blank')}
+  renderRevs(c.reviews||[])
+  document.getElementById('revFrm').style.display=(user&&profile&&profile.role==='patient')?'block':'none'
+  document.getElementById('bkw').classList.remove('on')
+  document.getElementById('bkfm').style.display='block'
+  document.getElementById('swrp').classList.remove('on')
+  document.getElementById('bd').value=new Date().toISOString().split('T')[0]
+  rBkSlots()
+  document.getElementById('cov').classList.add('open')
+}
+
+function renderRevs(revs){
+  document.getElementById('rCnt').textContent='('+revs.length+')'
+  if(revs.length===0){document.getElementById('mrvs').innerHTML='<p style="color:var(--mu);font-size:12px;">Отзывов пока нет. Будьте первым!</p>';return}
+  document.getElementById('mrvs').innerHTML=revs.slice(0,5).map(function(r){
+    var st='';for(var i=1;i<=5;i++)st+=i<=r.rating?'★':'☆'
+    return'<div class="rvc"><div class="rvh"><div class="rvn">'+(r.patient_name||'Пациент')+'</div><div class="rvs2">'+st+'</div></div>'+(r.text?'<div class="rvt">'+r.text+'</div>':'')+'<div class="rvd">'+(r.created_at?r.created_at.split('T')[0]:'')+'</div></div>'
+  }).join('')
+}
+
+function selStar(n){selRevStar=n;document.querySelectorAll('#starS span').forEach(function(s,i){s.classList.toggle('on',i<n);})}
+
+async function submitRev(){
+  if(!user){toast('⚠️ Войдите чтобы оставить отзыв');cM('cov');openAuth();return}
+  if(!selRevStar){toast('⚠️ Выберите рейтинг');return}
+  var cid=openedClinic&&openedClinic.id
+  if(!cid||cid.charAt(0)==='d'){toast('⚠️ Отзывы доступны только для реальных клиник');return}
+  var r=await db.from('reviews').insert({patient_id:user.id,clinic_id:cid,rating:selRevStar,text:document.getElementById('rvTxt').value.trim(),patient_name:profile?profile.name:'Пациент'})
+  if(r.error){toast('⚠️ Ошибка: '+r.error.message);return}
+  toast('✅ Отзыв опубликован!')
+  document.getElementById('rvTxt').value='';selStar(0)
+  await opC(cid,0)
+}
+
+// ══════════════════════════════════════════════
+// BOOKING
+// ══════════════════════════════════════════════
+var SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00']
+function rBkSlots(){
+  selBkTime=null
+  document.getElementById('tgrid').innerHTML=SLOTS.map(function(t){return'<div class="ts" onclick="selBT(\''+t+'\',this)">'+t+'</div>';}).join('')
+}
+function selBT(t,el){selBkTime=t;document.querySelectorAll('#tgrid .ts').forEach(function(s){s.classList.remove('sl');});el.classList.add('sl')}
+function showBk(){
+  if(!user){toast('⚠️ Войдите чтобы записаться');cM('cov');setTimeout(openAuth,300);return}
+  document.getElementById('bkw').classList.add('on')
+  setTimeout(function(){document.getElementById('bkw').scrollIntoView({behavior:'smooth'});},80)
+}
+async function confBk(){
+  if(!user){toast('⚠️ Войдите чтобы записаться');cM('cov');setTimeout(openAuth,300);return}
+  var n=document.getElementById('bn').value.trim()
+  var p=document.getElementById('bp2').value.trim()
+  if(!n||!p||!selBkTime){toast('⚠️ Заполните все поля и выберите время');return}
+  var cid=openedClinic&&openedClinic.id
+  var isDemo=!cid||cid.charAt(0)==='d'
+  if(!isDemo){
+    var r=await db.from('bookings').insert({patient_id:user.id,clinic_id:cid,service:document.getElementById('bsv').value,date:document.getElementById('bd').value,time:selBkTime,symptoms:document.getElementById('bsy').value,patient_name:n,patient_phone:p,status:'pending'})
+    if(r.error){toast('⚠️ Ошибка: '+r.error.message);return}
+  }
+  document.getElementById('bkfm').style.display='none'
+  document.getElementById('swrp').classList.add('on')
+  document.getElementById('stxt').textContent=(openedClinic?openedClinic.name:'')+' · '+document.getElementById('bsv').value+' · '+document.getElementById('bd').value+' в '+selBkTime
+  toast('✅ Запись подтверждена!')
+}
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+function openAuth(){document.getElementById('authOv').classList.add('open');swAT('in')}
+function swAT(tab){
+  document.getElementById('aForm-in').style.display=tab==='in'?'block':'none'
+  document.getElementById('aForm-up').style.display=tab==='up'?'block':'none'
+  document.getElementById('atab-in').classList.toggle('on',tab==='in')
+  document.getElementById('atab-up').classList.toggle('on',tab==='up')
+}
+async function doLogin(){
+  var email=document.getElementById('inEmail').value.trim()
+  var pass=document.getElementById('inPass').value
+  var err=document.getElementById('inErr')
+  err.classList.remove('on')
+  if(!email||!pass){err.textContent='Заполните все поля';err.classList.add('on');return}
+  var r=await db.auth.signInWithPassword({email:email,password:pass})
+  if(r.error){err.textContent=r.error.message;err.classList.add('on');return}
+  cM('authOv');toast('✅ Добро пожаловать!')
+}
+async function doRegister(){
+  var name=document.getElementById('upName').value.trim()
+  var email=document.getElementById('upEmail').value.trim()
+  var phone=document.getElementById('upPhone').value.trim()
+  var pass=document.getElementById('upPass').value
+  var err=document.getElementById('upErr')
+  err.classList.remove('on')
+  if(!name||!email||!pass){err.textContent='Заполните обязательные поля';err.classList.add('on');return}
+  if(pass.length<6){err.textContent='Пароль минимум 6 символов';err.classList.add('on');return}
+  var r=await db.auth.signUp({email:email,password:pass,options:{data:{name:name,phone:phone}}})
+  if(r.error){err.textContent=r.error.message;err.classList.add('on');return}
+  cM('authOv');toast('✅ Аккаунт создан! Войдите в систему.')
+}
+async function doLogout(){await db.auth.signOut();toast('👋 Вы вышли')}
+
+// ══════════════════════════════════════════════
+// PROFILE MODAL
+// ══════════════════════════════════════════════
+function openProf(){
+  if(!user){openAuth();return}
+  document.getElementById('profName').textContent=profile?profile.name||'Мой профиль':'Мой профиль'
+  document.getElementById('profEmail').textContent=user.email
+  document.getElementById('prName').value=profile?profile.name||'':''
+  document.getElementById('prPhone').value=profile?profile.phone||'':''
+  // Determine what to show
+  if(myClinic){
+    // Owner
+    document.getElementById('ptab-clinic').textContent='🏥 Моя клиника'
+    document.getElementById('ptcl-noClinic').style.display='none'
+    document.getElementById('ptcl-hasClinic').style.display='block'
+    document.getElementById('myClNm').textContent=myClinic.name
+    document.getElementById('myClAd').textContent=myClinic.address||myClinic.district||''
+    document.getElementById('myClCode').textContent=myClinic.join_code||'—'
+    document.getElementById('joinClinicSection').style.display='none'
+    document.getElementById('myDoctorInfo').style.display='none'
+  } else if(myDoctor&&myDoctor.clinic){
+    // Doctor linked to clinic
+    document.getElementById('ptab-clinic').textContent='🏥 Моя клиника'
+    document.getElementById('joinClinicSection').style.display='none'
+    document.getElementById('myDoctorInfo').style.display='block'
+    document.getElementById('myDocClinicName').textContent=myDoctor.clinic.name||'Клиника'
+    document.getElementById('pt-clinic').querySelector('#ptcl-noClinic').style.display='none'
+    document.getElementById('pt-clinic').querySelector('#ptcl-hasClinic').style.display='none'
+  } else {
+    // Regular user — show join + create options
+    document.getElementById('ptab-clinic').textContent='🏥 Для клиник'
+    document.getElementById('joinClinicSection').style.display='block'
+    document.getElementById('myDoctorInfo').style.display='none'
+    document.getElementById('ptcl-noClinic').style.display='block'
+    document.getElementById('ptcl-hasClinic').style.display='none'
+    document.getElementById('joinErr').classList.remove('on')
+  }
+  profTab('info',document.querySelector('.ptab'))
+  document.getElementById('profOv').classList.add('open')
+}
+
+function profTab(tab,btn){
+  document.querySelectorAll('.ptab').forEach(function(b){b.classList.remove('on');})
+  if(btn)btn.classList.add('on')
+  ;['info','bk','clinic'].forEach(function(t){document.getElementById('pt-'+t).style.display=t===tab?'block':'none';})
+  if(tab==='bk')loadMyBks()
+}
+
+async function saveProf(){
+  if(!user)return
+  await db.from('profiles').update({name:document.getElementById('prName').value.trim(),phone:document.getElementById('prPhone').value.trim()}).eq('id',user.id)
+  if(profile){profile.name=document.getElementById('prName').value.trim();updateNavAuth();}
+  toast('✅ Профиль сохранён')
+}
+
+async function loadMyBks(){
+  var r=await db.from('bookings').select('*, clinic:clinics(name)').eq('patient_id',user.id).order('created_at',{ascending:false})
+  var bks=r.data||[]
+  var stM={pending:'Ожидает',confirmed:'Подтверждено',done:'Завершено',cancelled:'Отменено'}
+  var stC={pending:'st-p',confirmed:'st-d',done:'st-d',cancelled:'st-c'}
+  document.getElementById('bkList').innerHTML=bks.length===0?'<div style="text-align:center;padding:24px;color:var(--mu);">📅 Записей нет<br><small>Запишитесь в клинику через каталог</small></div>':bks.map(function(b){
+    return'<div class="bk-c"><div class="bk-h"><div class="bk-cl">'+(b.clinic?b.clinic.name:'Клиника')+'</div><span class="bk-st '+(stC[b.status]||'st-p')+'">'+(stM[b.status]||b.status)+'</span></div><div class="bk-dt">'+b.service+' · '+b.date+' в '+b.time+'</div></div>'
+  }).join('')
+}
+
+async function joinClinic(){
+  var code=document.getElementById('joinCode').value.trim().toUpperCase()
+  var err=document.getElementById('joinErr')
+  err.classList.remove('on')
+  if(!code){err.textContent='Введите код клиники';err.classList.add('on');return}
+  if(!user){toast('⚠️ Войдите в систему');return}
+  var cr=await db.from('clinics').select('id,name').eq('join_code',code).maybeSingle()
+  if(!cr.data){err.textContent='Неверный код. Проверьте у руководителя.';err.classList.add('on');return}
+  // Add as doctor
+  var r=await db.from('doctors').insert({user_id:user.id,clinic_id:cr.data.id,name:profile?profile.name:'Врач'})
+  if(r.error){err.textContent='Ошибка: '+r.error.message;err.classList.add('on');return}
+  // Update profile role
+  await db.from('profiles').update({role:'doctor'}).eq('id',user.id)
+  // Reload
+  await onLogin(user)
+  cM('profOv')
+  toast('✅ Вы присоединились к клинике '+cr.data.name+'!')
+  setTimeout(function(){openPanel();},500)
+}
+
+async function createClinic(){
+  if(!user)return
+  var name=document.getElementById('cln').value.trim()
+  var dist=document.getElementById('clDist').value
+  if(!name||!dist){toast('⚠️ Заполните название и район');return}
+  var r=await db.from('clinics').insert({owner_id:user.id,name:name,description:document.getElementById('cld').value.trim(),district:dist,phone:document.getElementById('clPh').value.trim(),address:document.getElementById('clAddr').value.trim(),has_children:document.getElementById('cl_ch').checked,has_xray:document.getElementById('cl_xr').checked,has_cbct:document.getElementById('cl_cb').checked,works_weekend:document.getElementById('cl_wk').checked,accepts_uz:document.getElementById('cl_uz').checked,has_parking:document.getElementById('cl_pk').checked,has_emergency:document.getElementById('cl_em').checked,is_active:true}).select().single()
+  if(r.error){toast('⚠️ Ошибка: '+r.error.message);return}
+  // Update profile role to owner
+  await db.from('profiles').update({role:'owner'}).eq('id',user.id)
+  myClinic=r.data;profile.role='owner'
+  await loadClinics()
+  openProf()
+  toast('✅ Клиника создана и видна в каталоге!')
+}
+
+function cpCode(){
+  if(myClinic&&myClinic.join_code){
+    navigator.clipboard.writeText(myClinic.join_code).then(function(){toast('📋 Код скопирован: '+myClinic.join_code);})
+  }
+}
+
+// ══════════════════════════════════════════════
+// CLINIC PANEL (Owner + Doctor)
+// ══════════════════════════════════════════════
+async function openPanel(){
+  if(!user){openAuth();return}
+  var clinic=myClinic
+  if(!clinic&&myDoctor){
+    // Doctor - load their clinic
+    var cr=await db.from('clinics').select('*, services(*), doctors(*)').eq('id',myDoctor.clinic_id).single()
+    clinic=cr.data
+  }
+  if(!clinic){
+    toast('⚠️ У вас нет привязанной клиники. Создайте клинику или введите код.');
+    openProf();
+    setTimeout(function(){profTab('clinic',document.querySelectorAll('.ptab')[2]);},300)
+    return
+  }
+  panelRole=myClinic?'owner':'doctor'
+  cliSvcs=(clinic.services||[]).concat(BASE_SVCS.filter(function(b){return!(clinic.services||[]).find(function(s){return s.name===b.name;});}))
+  document.getElementById('panelTitle').textContent=clinic.name
+  document.getElementById('panelSub').textContent=panelRole==='owner'?'Владелец · '+clinic.join_code:'Врач'
+  // Hide services/doctors tabs for doctors
+  document.getElementById('ptab2-sv').style.display=panelRole==='owner'?'flex':'none'
+  document.getElementById('ptab2-dr').style.display=panelRole==='owner'?'flex':'none'
+  // Populate doctor select
+  pDrSel(clinic)
+  // Render orders select
+  rOrdSvcSel()
+  document.getElementById('panelOv').classList.add('open')
+  panTab('orders',document.querySelector('.ptab2'))
+  await loadOrders()
+  if(panelRole==='owner'){loadPanSvcs();loadPanDrs();}
+  loadPanBks()
+}
+
+function panTab(tab,btn){
+  document.querySelectorAll('.ptab2').forEach(function(b){b.classList.remove('on');})
+  if(btn)btn.classList.add('on')
+  ;['orders','services','doctors','bookings'].forEach(function(t){document.getElementById('pan-'+t).style.display=t===tab?'block':'none';})
+  if(tab==='services')loadPanSvcs()
+  if(tab==='doctors')loadPanDrs()
+  if(tab==='bookings')loadPanBks()
+}
+
+function pDrSel(clinic){
+  var drs=clinic?(clinic.doctors||[]):[]
+  var sel=document.getElementById('odr')
+  sel.innerHTML=drs.map(function(d){return'<option value="'+(d.id||d.name)+'">'+d.name+'</option>';}).join('')
+}
+
+// ══════════════════════════════════════════════
+// ORDERS — ALL-IN-ONE FORM
+// ══════════════════════════════════════════════
+var ordersList=[]
+
+function togOrdForm(){
+  var f=document.getElementById('ordForm')
+  f.classList.toggle('on')
+  if(f.classList.contains('on')){
+    editingOrderId=null
+    document.getElementById('ordFormTitle').textContent='📋 Новый ордер'
+    document.getElementById('onm').value=''
+    document.getElementById('oph').value=''
+    ordSvcs=[]
+    selOrdTime=null
+    renderOrdSvcs()
+    rOTimes()
+    f.scrollIntoView({behavior:'smooth'})
+  }
+}
+
+function rOrdSvcSel(){
+  var sel=document.getElementById('ordSvcSel')
+  sel.innerHTML=cliSvcs.map(function(s){
+    var p=s.price===0?'Бесплатно':s.price.toLocaleString()+' сум'
+    return'<option value="'+s.price+'" data-name="'+s.name+'">'+s.name+' — '+p+'</option>'
+  }).join('')+'<option value="custom" data-name="custom">✏️ Другое (вручную)</option>'
+}
+
+function addOrdSvc(){
+  var sel=document.getElementById('ordSvcSel')
+  if(sel.value==='custom'){
+    document.getElementById('ordCustom').classList.toggle('on')
+    return
+  }
+  var opt=sel.options[sel.selectedIndex]
+  ordSvcs.push({name:opt.getAttribute('data-name'),price:parseInt(sel.value)||0})
+  renderOrdSvcs()
+}
+
+function addCustomSvc(){
+  var nm=document.getElementById('custNm').value.trim()
+  var pr=parseInt(document.getElementById('custPr').value)||0
+  if(!nm){toast('⚠️ Введите название');return}
+  ordSvcs.push({name:nm,price:pr})
+  document.getElementById('custNm').value=''
+  document.getElementById('custPr').value=''
+  document.getElementById('ordCustom').classList.remove('on')
+  renderOrdSvcs()
+}
+
+function renderOrdSvcs(){
+  document.getElementById('ordSvcs').innerHTML=ordSvcs.map(function(s,i){
+    return'<div class="ord-svc-row"><span>'+s.name+'</span><div style="display:flex;align-items:center;gap:8px;"><span style="font-weight:600;">'+s.price.toLocaleString()+' сум</span><button onclick="removeOrdSvc('+i+')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;">✕</button></div></div>'
+  }).join('')
+}
+
+function removeOrdSvc(i){ordSvcs.splice(i,1);renderOrdSvcs()}
+
+function rOTimes(){
+  selOrdTime=null
+  var grid=document.getElementById('oTimeGrid')
+  var clinic=myClinic
+  var takenTimes=ordersList.filter(function(o){return o.status==='open'||o.status==='late';}).map(function(o){return o.time;})
+  grid.innerHTML=SLOTS.map(function(t){
+    var taken=takenTimes.indexOf(t)>=0
+    if(taken){
+      return'<div class="ts tk" title="Занято" onclick="showOConflict(\''+t+'\')">'+t+'</div>'
+    }
+    return'<div class="ts" onclick="selOT(\''+t+'\',this)">'+t+'</div>'
+  }).join('')
+  document.getElementById('oConflict').style.display='none'
+}
+
+function showOConflict(t){
+  var busy=ordersList.filter(function(o){return o.time===t&&(o.status==='open'||o.status==='late');})
+  if(busy.length>0){
+    document.getElementById('oConflict').textContent='⚠️ '+t+' занято: '+busy.map(function(o){return o.patient_name;}).join(', ')
+    document.getElementById('oConflict').style.display='block'
+  }
+}
+
+function selOT(t,el){
+  selOrdTime=t
+  document.getElementById('oConflict').style.display='none'
+  document.querySelectorAll('#oTimeGrid .ts').forEach(function(s){s.classList.remove('sl');})
+  el.classList.add('sl')
+}
+
+async function submitOrder(){
+  var nm=document.getElementById('onm').value.trim()
+  var ph=document.getElementById('oph').value.trim()
+  if(!nm||!ph){toast('⚠️ Введите имя и телефон пациента');return}
+  if(!selOrdTime){toast('⚠️ Выберите время');return}
+  var clinic=myClinic
+  var clinicId=clinic?clinic.id:null
+  var drSel=document.getElementById('odr')
+  var drId=drSel?drSel.value:null
+  if(editingOrderId){
+    // Update existing order in DB
+    if(clinicId&&editingOrderId.indexOf('local_')<0){
+      await db.from('orders').update({patient_name:nm,patient_phone:ph,time:selOrdTime,svcs:ordSvcs}).eq('id',editingOrderId)
+    }
+    var idx=ordersList.findIndex(function(o){return o.id===editingOrderId;})
+    if(idx>=0){ordersList[idx].patient_name=nm;ordersList[idx].patient_phone=ph;ordersList[idx].time=selOrdTime;ordersList[idx].svcs=ordSvcs;}
+    toast('✅ Ордер обновлён')
+  } else {
+    var newOrder={id:'local_'+Date.now(),patient_name:nm,patient_phone:ph,time:selOrdTime,status:'open',svcs:ordSvcs,pct:30,expanded:false}
+    if(clinicId){
+      var r=await db.from('orders').insert({clinic_id:clinicId,doctor_id:drId||null,patient_name:nm,patient_phone:ph,time:selOrdTime,service:'Приём',svcs:ordSvcs,pct:30,status:'open'}).select().single()
+      if(r.data)newOrder.id=r.data.id
+    }
+    ordersList.unshift(newOrder)
+    toast('✅ Ордер создан')
+  }
+  document.getElementById('ordForm').classList.remove('on')
+  ordSvcs=[]
+  selOrdTime=null
+  editingOrderId=null
+  renderOrders()
+}
+
+async function loadOrders(){
+  var clinic=myClinic
+  if(!clinic&&myDoctor){
+    var cr=await db.from('clinics').select('id').eq('id',myDoctor.clinic_id).maybeSingle()
+    if(cr.data)clinic={id:cr.data.id}
+  }
+  if(clinic&&clinic.id){
+    var r=await db.from('orders').select('*').eq('clinic_id',clinic.id).order('created_at',{ascending:false})
+    if(r.data&&r.data.length>0){
+      ordersList=r.data.map(function(o){return Object.assign({expanded:false},o,{svcs:o.svcs||[]});})
+    }
+  }
+  renderOrders()
+}
+
+function renderOrders(){
+  var open=ordersList.filter(function(o){return o.status==='open'||o.status==='late';}).length
+  document.getElementById('openCnt').textContent=open
+  if(ordersList.length===0){
+    document.getElementById('olist').innerHTML='<div style="text-align:center;padding:24px;color:var(--mu);">📋 Ордеров нет. Создайте первый.</div>'
+    return
+  }
+  var isOwner=panelRole==='owner'
+  var html=''
+  for(var i=0;i<ordersList.length;i++){
+    var o=ordersList[i]
+    var tot=0;o.svcs.forEach(function(s){tot+=s.price||0;})
+    var da=Math.round(tot*(o.pct||30)/100)
+    var ca=tot-da
+    var bCls={open:'s-op',done:'s-dn',late:'s-lt',noshow:'s-ns'}[o.status]||'s-op'
+    var bTxt={open:'Открыт',done:'Закрыт',late:'Опаздывает',noshow:'Не пришёл'}[o.status]||'Открыт'
+    var idx=i
+    html+='<div class="oc">'
+      +'<div class="oh" onclick="togO('+idx+')">'
+      +'<div class="oi"><h4>'+o.patient_name+'</h4><p>'+o.time+(o.svcs.length>0?' · '+o.svcs.length+' услуг':'')+(tot>0?' · '+tot.toLocaleString()+' сум':'')+'</p></div>'
+      +'<div class="o-actions">'
+      +'<span class="sbdg '+bCls+'">'+bTxt+'</span>'
+      +(o.status==='open'||o.status==='late'?'<button class="o-btn la" onclick="setSt('+idx+',\'late\');event.stopPropagation()">⏰</button><button class="o-btn no" onclick="setSt('+idx+',\'noshow\');event.stopPropagation()">✕</button>':'')
+      +(isOwner&&o.status!=='done'?'<button class="o-btn ed" onclick="editOrd('+idx+');event.stopPropagation()">✏️</button>':'')
+      +(isOwner?'<button class="o-btn dl" onclick="delOrd('+idx+');event.stopPropagation()">🗑</button>':'')
+      +'</div>'
+      +'</div>'
+      +'<div class="ob'+(o.expanded?' on':'')+'" id="ob'+i+'">'
+      +o.svcs.map(function(s){return'<div class="osvcr"><span>'+s.name+'</span><span style="font-weight:600;">'+s.price.toLocaleString()+' сум</span></div>';}).join('')
+      +(o.svcs.length===0?'<p style="color:var(--mu);font-size:12px;text-align:center;padding:6px;">Услуги не добавлены</p>':'')
+      +(tot>0?'<div class="ott"><span>Итого</span><span>'+tot.toLocaleString()+' сум</span></div>'
+        +'<div class="spr"><div class="spc"><div class="spl">Клиника ('+(100-(o.pct||30))+'%)</div><div class="spv">'+ca.toLocaleString()+'</div></div>'
+        +'<div class="spc"><div class="spl">Врач ('+(o.pct||30)+'%)</div><div class="spv">'+da.toLocaleString()+'</div></div></div>':'')
+      +(isOwner&&o.status!=='done'&&o.status!=='noshow'?'<button class="cfb" style="margin-top:4px;" onclick="closeOrd('+idx+')">✅ Закрыть ордер</button>':'')
+      +(o.status==='done'?'<p style="color:var(--te);font-size:12px;margin-top:4px;">✅ Ордер закрыт</p>':'')
+      +(o.status==='noshow'?'<p style="color:#888;font-size:12px;margin-top:4px;">✕ Пациент не пришёл</p>':'')
+      +'</div>'
+      +'</div>'
+  }
+  document.getElementById('olist').innerHTML=html
+}
+
+function togO(i){ordersList[i].expanded=!ordersList[i].expanded;renderOrders()}
+
+function setSt(i,s){
+  ordersList[i].status=s
+  if(ordersList[i].id&&ordersList[i].id.indexOf('local_')<0){
+    db.from('orders').update({status:s}).eq('id',ordersList[i].id)
+  }
+  renderOrders();rOTimes()
+  toast(s==='late'?'⏰ Опаздывает':'✕ Не пришёл — зафиксировано')
+}
+
+function editOrd(i){
+  var o=ordersList[i]
+  editingOrderId=o.id
+  ordSvcs=o.svcs.slice()
+  selOrdTime=o.time
+  document.getElementById('onm').value=o.patient_name||''
+  document.getElementById('oph').value=o.patient_phone||''
+  document.getElementById('ordFormTitle').textContent='✏️ Редактировать ордер'
+  renderOrdSvcs()
+  var f=document.getElementById('ordForm')
+  f.classList.add('on')
+  rOTimes()
+  // Re-select time
+  setTimeout(function(){
+    document.querySelectorAll('#oTimeGrid .ts').forEach(function(el){
+      if(el.textContent===o.time){el.classList.add('sl');}
+    })
+  },100)
+  f.scrollIntoView({behavior:'smooth'})
+}
+
+async function delOrd(i){
+  var o=ordersList[i]
+  if(!confirm('Удалить ордер "'+o.patient_name+'"?'))return
+  if(o.id&&o.id.indexOf('local_')<0){
+    await db.from('orders').delete().eq('id',o.id)
+  }
+  ordersList.splice(i,1)
+  renderOrders();rOTimes()
+  toast('🗑 Ордер удалён')
+}
+
+async function closeOrd(i){
+  if(panelRole!=='owner'){toast('⚠️ Только владелец может закрывать ордера');return}
+  ordersList[i].status='done'
+  if(ordersList[i].id&&ordersList[i].id.indexOf('local_')<0){
+    await db.from('orders').update({status:'done'}).eq('id',ordersList[i].id)
+  }
+  renderOrders();rOTimes()
+  toast('✅ Ордер закрыт')
+}
+
+// ══════════════════════════════════════════════
+// SERVICES & DOCTORS (panel)
+// ══════════════════════════════════════════════
+async function loadPanSvcs(){
+  if(!myClinic)return
+  var r=await db.from('services').select('*').eq('clinic_id',myClinic.id)
+  var svcs=r.data||[]
+  document.getElementById('svList').innerHTML=svcs.length===0?'<p style="color:var(--mu);font-size:12px;margin-bottom:10px;">Услуги не добавлены</p>':svcs.map(function(s){
+    var p=s.price===0?'Бесплатно':s.price.toLocaleString()+(s.price_max?'–'+s.price_max.toLocaleString():'')+' сум'
+    return'<div class="svc-row"><div><div style="font-size:13px;font-weight:500;">'+s.name+'</div><div style="font-size:10px;color:var(--mu);">'+s.category+'</div></div><div style="display:flex;align-items:center;gap:7px;"><span style="font-weight:600;color:var(--gd);">'+p+'</span><button onclick="delSvc(\''+s.id+'\')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;">✕</button></div></div>'
+  }).join('')
+  // Refresh merged list
+  cliSvcs=svcs.concat(BASE_SVCS.filter(function(b){return!svcs.find(function(s){return s.name===b.name;});}))
+  rOrdSvcSel()
+}
+
+async function addSvc(){
+  if(!myClinic){toast('⚠️ Сначала создайте клинику');return}
+  var nm=document.getElementById('svNm').value.trim()
+  if(!nm){toast('⚠️ Введите название');return}
+  var r=await db.from('services').insert({clinic_id:myClinic.id,name:nm,price:parseInt(document.getElementById('svPr').value)||0,price_max:parseInt(document.getElementById('svPrMax').value)||null,category:document.getElementById('svCat').value})
+  if(r.error){toast('⚠️ Ошибка: '+r.error.message);return}
+  ;['svNm','svPr','svPrMax'].forEach(function(id){document.getElementById(id).value='';})
+  await loadPanSvcs();await loadClinics()
+  toast('✅ Услуга добавлена — видна пациентам!')
+}
+
+async function delSvc(id){
+  await db.from('services').delete().eq('id',id)
+  await loadPanSvcs();await loadClinics()
+  toast('🗑 Услуга удалена')
+}
+
+async function loadPanDrs(){
+  if(!myClinic)return
+  var r=await db.from('doctors').select('*').eq('clinic_id',myClinic.id)
+  var drs=r.data||[]
+  document.getElementById('drList').innerHTML=drs.length===0?'<p style="color:var(--mu);font-size:12px;margin-bottom:10px;">Врачи не добавлены</p>':drs.map(function(d){
+    return'<div class="svc-row"><div><div style="font-size:13px;font-weight:500;">'+d.name+'</div><div style="font-size:10px;color:var(--mu);">'+d.specialty+'</div></div><button onclick="delDr(\''+d.id+'\')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;">✕</button></div>'
+  }).join('')
+}
+
+async function addDr(){
+  if(!myClinic){toast('⚠️ Сначала создайте клинику');return}
+  var nm=document.getElementById('drNm').value.trim()
+  if(!nm){toast('⚠️ Введите имя врача');return}
+  var r=await db.from('doctors').insert({clinic_id:myClinic.id,name:nm,specialty:document.getElementById('drSp').value.trim(),experience:parseInt(document.getElementById('drExp').value)||0,instagram:document.getElementById('drIg').value.trim()})
+  if(r.error){toast('⚠️ Ошибка: '+r.error.message);return}
+  ;['drNm','drSp','drExp','drIg'].forEach(function(id){document.getElementById(id).value='';})
+  await loadPanDrs();await loadClinics()
+  toast('✅ Врач добавлен')
+}
+
+async function delDr(id){await db.from('doctors').delete().eq('id',id);await loadPanDrs();toast('🗑 Врач удалён')}
+
+async function loadPanBks(){
+  var clinic=myClinic
+  if(!clinic&&myDoctor){clinic={id:myDoctor.clinic_id}}
+  if(!clinic)return
+  var r=await db.from('bookings').select('*').eq('clinic_id',clinic.id).order('created_at',{ascending:false})
+  var bks=r.data||[]
+  var stM={pending:'Ожидает',confirmed:'Подтверждено',done:'Завершено',cancelled:'Отменено'}
+  document.getElementById('panBkList').innerHTML=bks.length===0?'<div style="text-align:center;padding:24px;color:var(--mu);">📅 Записей нет</div>':bks.map(function(b){
+    return'<div class="bk-c"><div class="bk-h"><div class="bk-cl">'+b.patient_name+'</div><span class="bk-st st-p">'+(stM[b.status]||b.status)+'</span></div><div class="bk-dt">'+b.service+' · '+b.date+' в '+b.time+'<br>📞 '+b.patient_phone+'</div></div>'
+  }).join('')
+}
+
+// ══════════════════════════════════════════════
+// AI CHAT
+// ══════════════════════════════════════════════
+async function sAI(){
+  var inp=document.getElementById('aiinp')
+  var msg=inp.value.trim();if(!msg)return;inp.value=''
+  var box=document.getElementById('aimsgs')
+  box.innerHTML+='<div class="aml u" style="margin-top:9px;">Вы</div><div class="ab u">'+msg+'</div>'
+  var tid='t'+Date.now()
+  box.innerHTML+='<div id="'+tid+'"><div class="aml b" style="margin-top:8px;">🤖 MedUz AI</div><div class="ab b"><span class="ldot"></span> Анализирую...</div></div>'
+  box.scrollIntoView({behavior:'smooth',block:'end'})
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:'Ты AI-помощник стоматологической платформы MedUz в Узбекистане. Отвечай кратко (4-6 предложений) на языке пользователя. 1) возможная причина, 2) к какому специалисту, 3) срочность, 4) совет. Заканчивай предложением записаться через MedUz.',messages:[{role:'user',content:msg}]})})
+    var data=await r.json()
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Попробуйте ещё раз.'
+    document.getElementById(tid).innerHTML='<div class="aml b" style="margin-top:8px;">🤖 MedUz AI</div><div class="ab b">'+reply.replace(/\n/g,'<br>')+'</div>'
+  }catch(e){
+    document.getElementById(tid).innerHTML='<div class="aml b" style="margin-top:8px;">🤖 MedUz AI</div><div class="ab b">Ошибка. Попробуйте ещё раз.</div>'
+  }
+  box.scrollIntoView({behavior:'smooth',block:'end'})
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+function cM(id){document.getElementById(id).classList.remove('open')}
+function toast(msg){var t=document.getElementById('tst');t.textContent=msg;t.classList.add('on');setTimeout(function(){t.classList.remove('on');},3200);}
+function sL(l,btn){document.querySelectorAll('.lb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');}
+;['cov','authOv','profOv','panelOv'].forEach(function(id){
+  var el=document.getElementById(id);if(el)el.addEventListener('click',function(e){if(e.target===this)cM(id);})
+})
+
+init()
+</script>
+</body>
+</html>
