@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<title>MedUz — Intro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ===== MedUz design tokens (1:1 from index.html :root) ===== */
+:root{
+  --cr:#FAF8F5; --wh:#fff; --ink:#1A1612; --i2:#3D3530; --mu:#9A8F87;
+  --go:#C9A84C; --gl:#F0E4C0; --gd:#A07830; --te:#2A6B6B; --tl:#E8F4F4;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--cr);}
+#stage{
+  position:relative;width:1080px;height:1920px;background:var(--cr);
+  font-family:'DM Sans',sans-serif;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+}
+/* ambient gold glow, matches hero radial in the site */
+#glow{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 45% at 50% 42%,rgba(201,168,76,.16),transparent 62%);
+  opacity:0;
+}
+#vign{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 90% 80% at 50% 50%,transparent 55%,rgba(26,22,18,.05));
+  opacity:0;
+}
+.center{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;}
+
+/* ---- tooth mark inside a drawn gold ring ---- */
+#markWrap{top:560px;}
+#ring{
+  width:300px;height:300px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+#ring svg{position:absolute;inset:0;transform:rotate(-90deg);}
+#ring circle{
+  fill:none;stroke:var(--go);stroke-width:5;stroke-linecap:round;
+}
+#tooth{font-size:150px;line-height:1;transform-origin:50% 55%;opacity:0;}
+
+/* ---- wordmark ---- */
+#word{
+  top:920px;
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:168px;letter-spacing:-4px;line-height:1;
+}
+#word .clip{display:inline-block;overflow:hidden;vertical-align:top;}
+#word .inner{display:inline-block;}
+#word em{font-style:normal;color:var(--go);}
+
+/* ---- tagline + sweep underline ---- */
+#tag{top:1140px;}
+#tagText{
+  font-size:44px;font-weight:300;letter-spacing:2px;color:var(--mu);opacity:0;
+  transform:translateY(24px);
+}
+#rule{
+  margin-top:34px;height:4px;width:360px;border-radius:100px;
+  background:linear-gradient(90deg,var(--gd),var(--go),var(--gl));
+  transform:scaleX(0);transform-origin:50% 50%;
+}
+#badge{
+  top:470px;
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--gl);color:var(--gd);
+  font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;
+  padding:12px 28px;border-radius:100px;opacity:0;transform:translateY(-18px);
+}
+#badge .dot{width:12px;height:12px;background:var(--gd);border-radius:50%;}
+
+/* sparkles */
+.spark{position:absolute;width:14px;height:14px;border-radius:50%;
+  background:var(--go);opacity:0;filter:blur(.3px);}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="glow"></div>
+  <div id="vign"></div>
+
+  <div class="center" id="badge"><span class="dot"></span>СТОМАТОЛОГИЯ ОНЛАЙН</div>
+
+  <div class="center" id="markWrap">
+    <div id="ring">
+      <svg width="300" height="300" viewBox="0 0 300 300">
+        <circle id="ringPath" cx="150" cy="150" r="140"/>
+      </svg>
+      <div id="tooth">🦷</div>
+    </div>
+  </div>
+
+  <div class="center" id="word">
+    <span class="clip"><span class="inner">Med<em>Uz</em></span></span>
+  </div>
+
+  <div class="center" id="tag">
+    <div id="tagText">Найдите стоматолога рядом</div>
+    <div id="rule"></div>
+  </div>
+
+  <!-- sparkles injected by JS -->
+</div>
+
+<script>
+/* =========================================================================
+   MedUz intro — self-contained deterministic timeline.
+   Spec: 1080x1920, 60fps, 3.0s. Drive with window.__seek(seconds).
+   No external libs → every frame is a pure function of t (frame-exact).
+   ========================================================================= */
+(function(){
+  var DURATION = 3.0;
+  var stage = document.getElementById('stage');
+
+  // ---- tiny easing lib ----
+  function clamp01(x){ return x<0?0:x>1?1:x; }
+  var E = {
+    linear: function(t){ return t; },
+    outCubic: function(t){ return 1-Math.pow(1-t,3); },
+    inOutCubic: function(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; },
+    outQuint: function(t){ return 1-Math.pow(1-t,5); },
+    outBack: function(t){ var c1=1.70158,c3=c1+1; return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2); },
+    outElastic: function(t){ var c4=(2*Math.PI)/3; return t===0?0:t===1?1:Math.pow(2,-10*t)*Math.sin((t*10-0.75)*c4)+1; }
+  };
+  // map a global time t onto a segment [a,b] with easing → 0..1
+  function seg(t,a,b,ease){ return (ease||E.linear)(clamp01((t-a)/(b-a))); }
+  function lerp(a,b,p){ return a+(b-a)*p; }
+
+  // ---- element refs ----
+  var glow   = document.getElementById('glow');
+  var vign   = document.getElementById('vign');
+  var badge  = document.getElementById('badge');
+  var ring   = document.getElementById('ring');
+  var ringPath = document.getElementById('ringPath');
+  var tooth  = document.getElementById('tooth');
+  var word   = document.getElementById('word');
+  var wordInner = word.querySelector('.inner');
+  var wordClip  = word.querySelector('.clip');
+  var tagText = document.getElementById('tagText');
+  var rule    = document.getElementById('rule');
+
+  // ring circumference for stroke-dash draw
+  var R = 140, CIRC = 2*Math.PI*R;
+  ringPath.style.strokeDasharray = CIRC;
+
+  // ---- sparkles: deterministic pseudo-random layout around the mark ----
+  var sparks = [];
+  (function(){
+    var seed = 20250713;
+    function rnd(){ seed = (seed*1664525 + 1013904223) & 0x7fffffff; return seed/0x7fffffff; }
+    var cx=540, cy=710; // centre of ring
+    for(var i=0;i<14;i++){
+      var ang = rnd()*Math.PI*2;
+      var rad = 170 + rnd()*130;
+      var el = document.createElement('div');
+      el.className='spark';
+      var x = cx + Math.cos(ang)*rad;
+      var y = cy + Math.sin(ang)*rad*0.9;
+      el.style.left=(x-7)+'px'; el.style.top=(y-7)+'px';
+      var sc = 0.5 + rnd()*1.1;
+      stage.appendChild(el);
+      sparks.push({el:el, phase:rnd(), scale:sc, x:x, y:y});
+    }
+  })();
+
+  // ---- the timeline: pure function of t (seconds) ----
+  function render(t){
+    t = Math.max(0, Math.min(DURATION, t));
+
+    // ambient glow: fades in early, breathes gently
+    var g = seg(t,0,0.8,E.outCubic);
+    glow.style.opacity = (g*(0.85 + 0.15*Math.sin(t*2.2))).toFixed(4);
+    vign.style.opacity = seg(t,0.3,1.4,E.outCubic).toFixed(4);
+
+    // BEAT 1 (0.05–1.0s): tooth pops, ring draws
+    var pop = seg(t,0.15,0.95,E.outBack);
+    tooth.style.opacity = seg(t,0.15,0.5,E.outCubic).toFixed(4);
+    var tScale = lerp(0.2,1,pop);
+    var tRot = lerp(-40,0,seg(t,0.15,1.05,E.outElastic));
+    tooth.style.transform = 'scale('+tScale.toFixed(4)+') rotate('+tRot.toFixed(2)+'deg)';
+
+    var draw = seg(t,0.25,1.25,E.inOutCubic);
+    ringPath.style.strokeDashoffset = (CIRC*(1-draw)).toFixed(2);
+    ringPath.style.opacity = seg(t,0.25,0.5,E.linear).toFixed(3);
+    var ringScale = lerp(0.86,1,seg(t,0.2,1.1,E.outBack));
+    ring.style.transform = 'scale('+ringScale.toFixed(4)+')';
+
+    // badge above mark
+    var b = seg(t,0.55,1.15,E.outCubic);
+    badge.style.opacity = b.toFixed(3);
+    badge.style.transform = 'translateY('+lerp(-18,0,b).toFixed(2)+'px)';
+
+    // BEAT 2 (1.1–2.0s): wordmark mask reveal + slight rise
+    var reveal = seg(t,1.1,2.0,E.outQuint);
+    wordClip.style.clipPath = 'inset(0 '+((1-reveal)*100).toFixed(2)+'% 0 0)';
+    var wy = lerp(40,0,seg(t,1.1,1.9,E.outCubic));
+    var wo = seg(t,1.1,1.5,E.outCubic);
+    wordInner.style.transform = 'translateY('+wy.toFixed(2)+'px)';
+    word.style.opacity = wo.toFixed(3);
+
+    // BEAT 3 (2.0–3.0s): tagline rises, gold rule sweeps
+    var tg = seg(t,2.05,2.7,E.outCubic);
+    tagText.style.opacity = tg.toFixed(3);
+    tagText.style.transform = 'translateY('+lerp(24,0,tg).toFixed(2)+'px)';
+    var rl = seg(t,2.2,2.95,E.inOutCubic);
+    rule.style.transform = 'scaleX('+rl.toFixed(4)+')';
+
+    // sparkles twinkle in during beats 2–3
+    for(var i=0;i<sparks.length;i++){
+      var s=sparks[i];
+      var appear = seg(t,1.2+s.phase*0.6,3.0,E.linear);
+      var tw = 0.35 + 0.65*Math.abs(Math.sin((t*3.0 + s.phase*6.28)));
+      s.el.style.opacity = (appear*tw*0.9).toFixed(3);
+      s.el.style.transform = 'scale('+(s.scale*(0.6+0.4*appear)).toFixed(3)+')';
+    }
+  }
+
+  // ---- public API for the renderer ----
+  window.__DURATION = DURATION;
+  window.__FPS = 60;
+  window.__seek = function(t){ render(t); return t; };
+
+  // live preview loop (only when not being frame-scrubbed by the renderer)
+  var previewing = true;
+  window.__stopPreview = function(){ previewing = false; };
+  var start = null;
+  function loop(now){
+    if(!previewing) return;
+    if(start===null) start = now;
+    var t = ((now-start)/1000) % (DURATION + 0.6); // small hold before repeat
+    render(Math.min(t, DURATION));
+    requestAnimationFrame(loop);
+  }
+
+  // signal readiness once fonts are in, so the renderer measures real glyphs
+  function ready(){
+    render(0);
+    window.__ready = true;
+    requestAnimationFrame(loop);
+  }
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(ready);
+    // safety: don't hang forever if fonts CDN is blocked
+    setTimeout(function(){ if(!window.__ready) ready(); }, 2500);
+  } else { ready(); }
+})();
+</script>
+</body>
+</html>
