@@ -1,2 +1,4 @@
 node_modules/
 out/frames/
+package.json
+package-lock.json
