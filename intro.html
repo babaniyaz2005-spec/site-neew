@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<title>MedUz — Luxury Intro</title>
+<style>
+/* ===== Local fonts (Google Fonts ttf, full Cyrillic) ===== */
+@font-face{font-family:'Cormorant Garamond';font-weight:600;font-style:normal;
+  src:url('fonts/cormorant-garamond-600.ttf') format('truetype');font-display:block;}
+@font-face{font-family:'Manrope';font-weight:400;font-style:normal;
+  src:url('fonts/manrope-400.ttf') format('truetype');font-display:block;}
+
+/* ===== MedUz Luxury tokens (immutable) ===== */
+:root{
+  --bg:#0B0B0D; --bg2:#141416;
+  --gold:#C9A962; --gold-lt:#E8D5A3;
+  --ivory:#F5F0E6; --mint:#7FD6C2;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);}
+#viewport{position:relative;width:1080px;height:1920px;background:var(--bg);overflow:hidden;}
+
+/* camera-drift container: the whole world lives & breathes */
+#world{position:absolute;inset:0;transform-origin:50% 46%;will-change:transform;}
+
+/* ---------- LAYER 1 : far background (blur 20-40px) ---------- */
+#layerBack{position:absolute;inset:-40px;will-change:transform;filter:blur(34px);}
+#bgbase{position:absolute;inset:0;
+  background:radial-gradient(ellipse 62% 46% at 50% 46%, var(--bg2) 0%, #0d0d0f 46%, var(--bg) 78%);}
+.blob{position:absolute;border-radius:50%;}
+#blobA{width:760px;height:760px;left:120px;top:520px;
+  background:radial-gradient(circle, rgba(201,169,98,.10), transparent 65%);}
+#blobB{width:620px;height:620px;left:520px;top:960px;
+  background:radial-gradient(circle, rgba(201,169,98,.06), transparent 60%);}
+#dustBack{position:absolute;inset:0;will-change:transform;}
+
+/* ---------- LAYER 2 : mid (the story) ---------- */
+#layerMid{position:absolute;inset:0;will-change:transform;}
+
+#ecgWrap{position:absolute;left:0;top:730px;width:1080px;height:300px;
+  transform-origin:50% 50%;will-change:transform,opacity;}
+#ecg{width:1080px;height:300px;display:block;overflow:visible;}
+#ecgPath{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 calc(10px*var(--breath,1)) rgba(201,169,98,.9))
+         drop-shadow(0 0 calc(26px*var(--breath,1)) rgba(201,169,98,.45));}
+
+/* collapse point + gold explosion, centred on the logo birthplace */
+#spark{position:absolute;left:540px;top:880px;width:40px;height:40px;margin:-20px;
+  border-radius:50%;background:radial-gradient(circle,#fff 0%,var(--gold-lt) 30%,var(--gold) 55%,transparent 70%);
+  opacity:0;will-change:transform,opacity;
+  filter:drop-shadow(0 0 30px rgba(232,213,163,.9));}
+#flash{position:absolute;left:540px;top:880px;width:900px;height:900px;margin:-450px;border-radius:50%;
+  background:radial-gradient(circle, rgba(255,251,240,.95) 0%, rgba(232,213,163,.7) 14%, rgba(201,169,98,.35) 30%, transparent 60%);
+  opacity:0;will-change:transform,opacity;}
+#ring{position:absolute;left:540px;top:880px;width:240px;height:240px;margin:-120px;border-radius:50%;
+  border:3px solid var(--gold-lt);opacity:0;will-change:transform,opacity;
+  box-shadow:0 0 40px rgba(232,213,163,.6),inset 0 0 30px rgba(232,213,163,.4);}
+#rays{position:absolute;left:540px;top:880px;width:1400px;height:1400px;margin:-700px;
+  opacity:0;will-change:transform,opacity;mix-blend-mode:screen;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,
+     rgba(201,169,98,.12) 0deg 3deg, transparent 3deg 16deg);}
+
+/* mint pulse — the ONE mint moment, on the ECG peak (centre-top) */
+#mint{position:absolute;left:540px;top:790px;width:300px;height:300px;margin:-150px;border-radius:50%;
+  background:radial-gradient(circle, rgba(127,214,194,.9) 0%, rgba(127,214,194,.35) 30%, transparent 62%);
+  opacity:0;will-change:transform,opacity;filter:drop-shadow(0 0 24px rgba(127,214,194,.7));}
+
+/* wordmark */
+#word{position:absolute;left:0;right:0;top:770px;text-align:center;
+  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:212px;line-height:1;
+  letter-spacing:-2px;white-space:nowrap;--sweepX:100%;}
+#word span{display:inline-block;will-change:transform,opacity,filter;filter:blur(var(--b,0px));}
+#word .ivory{color:var(--ivory);
+  text-shadow:0 0 calc(18px*var(--breath,1)) rgba(245,240,230,.18);}
+#word .gold{
+  background-image:linear-gradient(105deg,
+     #B9973F 0%, #C9A962 30%, #E8D5A3 45%, #FFFFFF 50%, #E8D5A3 55%, #C9A962 70%, #B9973F 100%);
+  background-size:260% 100%;
+  background-position:var(--sweepX,100%) 50%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  filter:blur(var(--b,0px)) drop-shadow(0 0 calc(22px*var(--breath,1)) rgba(201,169,98,.5));}
+
+/* tagline */
+#tag{position:absolute;left:0;right:0;top:1150px;text-align:center;
+  font-family:'Manrope',sans-serif;font-weight:400;font-size:33px;text-transform:uppercase;
+  color:var(--ivory);opacity:0;letter-spacing:.7em;will-change:transform,opacity,letter-spacing;}
+#tag b{font-weight:400;color:var(--gold);}
+
+/* ---------- LAYER 3 : foreground dust (blur 2-4px), fast parallax ---------- */
+#layerFront{position:absolute;inset:0;will-change:transform;filter:blur(3px);}
+#dustFront{position:absolute;inset:0;will-change:transform;}
+.d{position:absolute;border-radius:50%;background:radial-gradient(circle,var(--gold-lt),var(--gold) 55%,transparent 75%);}
+
+/* ---------- fixed overlays (grain / vignette / chromatic aberration) ---------- */
+#grain{position:absolute;inset:0;opacity:.045;pointer-events:none;mix-blend-mode:screen;}
+#vignette{position:absolute;inset:0;pointer-events:none;opacity:.35;
+  background:radial-gradient(ellipse 78% 68% at 50% 46%, transparent 44%, rgba(0,0,0,.9) 100%);}
+#ca{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;will-change:opacity;
+  background:
+    radial-gradient(circle at calc(50% - 2px) 46%, rgba(255,40,40,.55), transparent 13%),
+    radial-gradient(circle at calc(50% + 2px) 46%, rgba(40,220,255,.55), transparent 13%);}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="world">
+    <!-- L1 -->
+    <div id="layerBack">
+      <div id="bgbase"></div>
+      <div class="blob" id="blobA"></div>
+      <div class="blob" id="blobB"></div>
+      <div id="dustBack"></div>
+    </div>
+    <!-- L2 -->
+    <div id="layerMid">
+      <div id="rays"></div>
+      <div id="flash"></div>
+      <div id="ring"></div>
+      <div id="ecgWrap">
+        <svg id="ecg" viewBox="0 0 1080 300" preserveAspectRatio="xMidYMid meet">
+          <path id="ecgPath" d="M0,150 L360,150 L400,138 L440,150 L500,150 L520,156 L540,30 L560,270 L580,150 L640,150 L700,132 L760,150 L1080,150"/>
+        </svg>
+      </div>
+      <div id="mint"></div>
+      <div id="spark"></div>
+      <div id="word"><span class="ivory">M</span><span class="ivory">e</span><span class="ivory">d</span><span class="gold">U</span><span class="gold">z</span></div>
+      <div id="tag">Система&nbsp;для&nbsp;<b>стоматологий</b></div>
+    </div>
+    <!-- L3 -->
+    <div id="layerFront"><div id="dustFront"></div></div>
+  </div>
+
+  <!-- overlays -->
+  <svg id="grain" xmlns="http://www.w3.org/2000/svg">
+    <filter id="grainFilter"><feTurbulence id="turb" type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter>
+    <rect width="100%" height="100%" filter="url(#grainFilter)"/>
+  </svg>
+  <div id="vignette"></div>
+  <div id="ca"></div>
+</div>
+
+<script src="vendor/gsap.min.js"></script>
+<script>
+(function(){
+  var DURATION = 3.0, FPS = 60;
+
+  /* ---- deterministic PRNG (fixed seed → identical every run) ---- */
+  function makeRng(seed){ return function(){ seed=(seed*1664525+1013904223)&0x7fffffff; return seed/0x7fffffff; }; }
+
+  /* ---- gold dust on two planes, precomputed coordinates ---- */
+  var backDust=[], frontDust=[];
+  (function(){
+    var r=makeRng(9174523), i, el, x, y, s;
+    var back=document.getElementById('dustBack');
+    for(i=0;i<30;i++){
+      x=r()*1080; y=r()*1920; s=1.5+r()*3.5;
+      el=document.createElement('div'); el.className='d';
+      el.style.cssText='width:'+s+'px;height:'+s+'px;left:'+x+'px;top:'+y+'px;opacity:0;';
+      back.appendChild(el); backDust.push({el:el,ph:r()*6.283,sp:0.5+r()*0.8,base:0.20+r()*0.30});
+    }
+    var front=document.getElementById('dustFront');
+    for(i=0;i<16;i++){
+      x=r()*1080; y=r()*1920; s=6+r()*8;
+      el=document.createElement('div'); el.className='d';
+      el.style.cssText='width:'+s+'px;height:'+s+'px;left:'+x+'px;top:'+y+'px;opacity:0;';
+      front.appendChild(el); frontDust.push({el:el,ph:r()*6.283,sp:0.6+r()*0.9,base:0.35+r()*0.35});
+    }
+  })();
+
+  var $=function(id){return document.getElementById(id);};
+  var world=$('world'), layerBack=$('layerBack'), layerMid=$('layerMid'), layerFront=$('layerFront');
+  var ecgWrap=$('ecgWrap'), ecgPath=$('ecgPath'), mint=$('mint'), spark=$('spark'),
+      flash=$('flash'), ring=$('ring'), rays=$('rays'), word=$('word'), tag=$('tag'),
+      ca=$('ca'), turb=$('turb'), dustBackWrap=$('dustBack'), dustFrontWrap=$('dustFront');
+  var letters=word.querySelectorAll('span');
+
+  /* stroke draw setup */
+  var LEN=ecgPath.getTotalLength();
+  ecgPath.style.strokeDasharray=LEN;
+  ecgPath.style.strokeDashoffset=LEN;
+
+  /* breathing glow → CSS var --breath (±15%), sine, spans whole ballad */
+  var breath={v:1};
+
+  gsap.defaults({}); // no global default ease; every tween sets its own
+
+  var tl=gsap.timeline({paused:true});
+
+  /* ===== LAW: camera drift — world scales & drifts the entire runtime ===== */
+  tl.to(world,{scale:1.015,duration:3,ease:'sine.inOut'},0)
+    .to(world,{x:5,y:-4,duration:3,ease:'sine.inOut'},0);
+
+  /* parallax: 3 planes drift at different speeds/directions */
+  tl.to(layerBack ,{x:-14,y:7 ,duration:3,ease:'sine.inOut'},0)
+    .to(layerMid  ,{x:6  ,y:-3,duration:3,ease:'sine.inOut'},0)
+    .to(layerFront,{x:24 ,y:-12,duration:3,ease:'sine.inOut'},0);
+
+  /* breathing glow across the whole piece */
+  tl.fromTo(breath,{v:0.85},{v:1.15,duration:2.4,ease:'sine.inOut',yoyo:true,repeat:1,
+      onUpdate:function(){ document.documentElement.style.setProperty('--breath',breath.v.toFixed(3)); }},0);
+
+  /* ===================== BEAT 1 : 0.0–1.2s  ECG pulse ===================== */
+  tl.fromTo(ecgWrap,{opacity:0},{opacity:1,duration:0.28,ease:'expo.out'},0.02);
+  tl.fromTo(ecgPath,{strokeDashoffset:LEN},{strokeDashoffset:0,duration:1.18,ease:'power3.inOut'},0.02);
+
+  /* mint accent — the SINGLE mint moment, fired as the trace hits the peak */
+  tl.fromTo(mint,{opacity:0,scale:0.55},{opacity:1,scale:1.15,duration:0.10,ease:'power4.out'},0.62)
+    .to(mint,{opacity:0,scale:1.7,duration:0.20,ease:'power2.in'},0.72);
+  /* chromatic aberration burst on the mint peak (≈3 frames) */
+  tl.fromTo(ca,{opacity:0},{opacity:0.85,duration:0.05,ease:'power2.out'},0.62)
+    .to(ca,{opacity:0,duration:0.08,ease:'power2.in'},0.67);
+
+  /* ===================== BEAT 2 : 1.2–1.7s collapse → dark → burst ======= */
+  /* line collapses horizontally into a single point of light */
+  tl.to(ecgWrap,{scaleX:0.015,duration:0.30,ease:'power4.in'},1.20)
+    .to(ecgWrap,{opacity:0,duration:0.18,ease:'power2.in'},1.34);
+  tl.fromTo(spark,{opacity:0,scale:0.2},{opacity:1,scale:1,duration:0.24,ease:'power3.out'},1.20);
+  /* MICROPAUSE — visual silence in near-total darkness (1.42–1.68 ≈ 0.30s) */
+  tl.to(spark,{opacity:0.14,scale:0.5,duration:0.24,ease:'power2.inOut'},1.42);
+  /* gold explosion */
+  tl.to(spark,{opacity:1,scale:1.4,duration:0.05,ease:'power2.out'},1.66)
+    .to(spark,{opacity:0,scale:0.2,duration:0.24,ease:'power2.in'},1.74);
+  tl.fromTo(flash,{opacity:0,scale:0.3},{opacity:1,scale:1,duration:0.08,ease:'power4.out'},1.68)
+    .to(flash,{opacity:0,scale:1.7,duration:0.42,ease:'power2.out'},1.77);
+  tl.fromTo(ring,{opacity:0.95,scale:0.15},{opacity:0,scale:2.6,duration:0.52,ease:'expo.out'},1.70);
+  tl.fromTo(rays,{opacity:0,scale:0.6,rotation:-8},{opacity:0.55,scale:1,rotation:0,duration:0.20,ease:'power3.out'},1.70)
+    .to(rays,{opacity:0,scale:1.3,duration:0.6,ease:'power2.out'},1.90);
+  /* chromatic aberration burst on the explosion */
+  tl.fromTo(ca,{opacity:0},{opacity:0.95,duration:0.05,ease:'power2.out'},1.68)
+    .to(ca,{opacity:0,duration:0.10,ease:'power2.in'},1.74);
+  /* dust ignites out of the burst, on both planes */
+  tl.fromTo([dustBackWrap,dustFrontWrap],{opacity:0},{opacity:1,duration:0.9,ease:'power2.out'},1.70);
+
+  /* ===================== BEAT 3 : 1.7–2.5s wordmark from blur =========== */
+  var L0=1.80, stg=0.075;
+  letters.forEach(function(L,i){
+    tl.fromTo(L,
+      {opacity:0,y:40,scale:1.16,'--b':'24px'},
+      {opacity:1,y:0,scale:1,'--b':'0px',duration:0.46,ease:'back.out(1.7)'},
+      L0+i*stg);
+  });
+  /* specular sweep — 0.3s after the last letter lands, light runs L→R over gold */
+  var sweepAt=L0+(letters.length-1)*stg+0.46+0.30; // ≈2.42
+  tl.fromTo(word,{'--sweepX':'100%'},{'--sweepX':'-15%',duration:0.5,ease:'power2.inOut'},sweepAt);
+
+  /* ===================== BEAT 4 : 2.3–3.0s tagline tracking-in ========== */
+  tl.fromTo(tag,
+    {opacity:0,y:14,letterSpacing:'0.72em'},
+    {opacity:0.82,y:0,letterSpacing:'0.34em',duration:0.62,ease:'expo.out'},2.30);
+
+  /* =================== per-frame render details (grain + dust twinkle) === */
+  function detail(t){
+    turb.setAttribute('seed', (Math.floor(t*FPS)*37)%512);           // grain refreshes each frame
+    var i,d,o;
+    for(i=0;i<backDust.length;i++){ d=backDust[i];
+      o=d.base*(0.45+0.55*Math.sin(t*d.sp*3.1+d.ph)); d.el.style.opacity=o.toFixed(3); }
+    for(i=0;i<frontDust.length;i++){ d=frontDust[i];
+      o=d.base*(0.40+0.60*Math.sin(t*d.sp*3.4+d.ph)); d.el.style.opacity=o.toFixed(3); }
+  }
+
+  /* ---- public API ---- */
+  window.__DURATION=DURATION; window.__FPS=FPS;
+  window.__seek=function(t){ t=Math.max(0,Math.min(DURATION,t)); tl.time(t); detail(t); return t; };
+
+  /* ---- preview loop (disabled by the renderer) ---- */
+  var previewing=true, start=null;
+  window.__stopPreview=function(){ previewing=false; };
+  function loop(now){ if(!previewing)return; if(start===null)start=now;
+    var t=((now-start)/1000)%(DURATION+0.5); window.__seek(Math.min(t,DURATION)); requestAnimationFrame(loop); }
+
+  function ready(){ window.__seek(0); window.__ready=true; requestAnimationFrame(loop); }
+  if(document.fonts&&document.fonts.ready){
+    document.fonts.ready.then(ready);
+    setTimeout(function(){ if(!window.__ready) ready(); },4000);
+  } else ready();
+})();
+</script>
+</body>
+</html>
